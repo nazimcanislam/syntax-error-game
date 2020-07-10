@@ -10,6 +10,8 @@ Python'ın Pygame modülünü kullanarak yaptığım küçük bir oyun.
 ### Oyunun Amacı
 Normalde Python'da mevcut olmayan anahtar kelimeler, operatör vesaire şeylerden sıyrılmalısınız (dodge). :D
 
+Oyun **yön tuşları** ve **WASD** ile oynanır.
+
 Her 25 hatadan kaçtığınızda ekstra 1 can kazanırsınız.
 
 ### Kendi Adımı Yazmak İstiyorum?
