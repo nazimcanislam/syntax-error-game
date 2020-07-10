@@ -11,7 +11,7 @@ def main(*args: list, **kwargs: dict) -> None:
     # Ekranı temizle.
     terminal.clear()
 
-    name: str = "Nazımcan"
+    name: str = "Python"
 
     # Oyun objesi oluştur. Bu sayede oyun başlayacak.
     game: Game = Game(name)
