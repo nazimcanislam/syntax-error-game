@@ -1,5 +1,6 @@
 import pygame
 import os
+import termcolor
 
 from .player import Player
 from .enemy import Enemy
@@ -13,142 +14,156 @@ pygame.init()
 
 
 class Game:
-    """Pygame oyunu yapmak için bir sınıf"""
+	"""Pygame oyunu yapmak için bir sınıf"""
 
-    def __init__(self, player_name: str):
-        """Oyunun inşaa etme metodu"""
+	def __init__(self, player_name: str):
+		"""Oyunun inşaa etme metodu"""
 
-        self.player_name: str = player_name
+		self.player_name: str = player_name
 
-        # Ekranı ortala
-        os.environ['SDL_VIDEO_CENTERED'] = '1'
+		# Ekranı ortala
+		os.environ['SDL_VIDEO_CENTERED'] = '1'
 
-        os.environ["SDL_VIDEO_WINDOW_POS"] = "{0}, {1}".format(500, 100)
+		# Renkler!
+		self.black: tuple = (0, 0, 0)
+		self.white: tuple = (255, 255, 255)
+		self.red: tuple = (255, 0, 0)
+		self.green: tuple = (0, 255, 0)
 
-        # Renkler!
-        self.black: tuple = (0, 0, 0)
-        self.white: tuple = (255, 255, 255)
-        self.red: tuple = (255, 0, 0)
-        self.green: tuple = (0, 255, 0)
+		# Oyunun genişlik, yükleklik ve başlığını tanımla.
+		self.width: int = 1200
+		self.height: int = 800
+		self.title: str = "Yazım Hatası"
 
-        # Oyunun genişlik, yükleklik ve başlığını tanımla.
-        self.width: int = 1200
-        self.height: int = 800
-        self.title: str = "Yazım Hatası"
+		# Pygame'in kendi Clock() sınıfından bir obje oluştur.
+		self.clock: pygame.time.Clock = pygame.time.Clock()  # Pygame Clock sınıfı
+		self.max_fps: int = 60
 
-        self.favicon_image: pygame.Surface = pygame.image.load(
-            os.path.join("assets", "favicon.png")
-        )
+		# Pencereyi oluştur.
+		self.screen: pygame.Surface = pygame.display.set_mode((self.width, self.height))
+		pygame.display.set_caption(self.title)
 
-        # Pygame'in kendi Clock() sınıfından bir obje oluştur.
-        self.clock: pygame.time.Clock = pygame.time.Clock()  # Pygame Clock sınıfı
-        self.fps: int = 60
+		try:
+			self.favicon_image: pygame.Surface = pygame.image.load(os.path.join("assets", "favicon.png")			)
+			pygame.display.set_icon(pygame.transform.smoothscale(self.favicon_image, (128, 128)))
 
-        # Pencereyi oluştur.
-        self.screen: pygame.Surface = pygame.display.set_mode((self.width, self.height))
-        pygame.display.set_caption(self.title)
-        pygame.display.set_icon(pygame.transform.smoothscale(self.favicon_image, (128, 128)))
+		except pygame.error:
+			print(termcolor.colored("HATA: Favicon yüklenemedi!", "red"))
 
-        self.player: Player = Player(self.player_name, 10, self.screen)
-        self.collision: Collision = Collision(self.player)
+		self.player: Player = Player(self.player_name, 10, self.screen)
+		self.collision: Collision = Collision(self.player)
 
-        self.run()
+		self.run()
 
-    def run(self) -> None:
-        """Oyunu başlatın!"""
+	def run(self) -> None:
+		"""Oyunu başlatın!"""
 
-        self.running: bool = True
-        self.keys: tuple = tuple()
+		self.running: bool = True
+		self.keys: tuple = tuple()
 
-        self.bg_color: tuple = (240, 240, 240)
-        self.bg_music: Sound = Sound("assets", "bg_music.wav")
-        self.bg_music.play_and_repeat()
+		self.bg_color: tuple = (240, 240, 240)
 
-        self.level: int = 1
-        self.enemy_count: int = 3
-        self.dodged: int = 0
+		try:
+			self.bg_music: Sound = Sound("assets", "bg_music.wav")
+			self.bg_music.play_and_repeat()
+		
+		except FileNotFoundError:
+			print(termcolor.colored("HATA: Arka plan müzik dosyası bulunamadı!", "red"))
+			print(termcolor.colored(f"İPUCU: Lütfen assets klasöründeki 'bg_music.wav' bir müzik dosyası olduğuna emin olun veya '{os.path.basename(__file__)}'' dosyasını kontrol edin...", "yellow"))
+		
+		except Exception:
+			print(termcolor.colored("HATA: Bilinmeyen bir hata meydana geldi!"))
 
-        
-        self.enemies: list = self.create_enemies()
+		self.level: int = 1
+		self.enemy_count: int = 3
+		self.dodged: int = 0
 
-        # Oyunun döngüsü burada :)
-        while self.running:
+		self.enemies: list = self.create_enemies()
 
-            # FPS: 60 olarak ayarla.
-            self.clock.tick(self.fps)
+		# Oyunun döngüsü burada :)
+		while self.running:
 
-            # Eylemleri ve olayları yakala ve onlara göre işlem yap.
-            for event in pygame.event.get():
-                event: pygame.event.EventType = event
-                
-                # Çıkış yapılmak isteniyor ise...
-                if event.type == pygame.QUIT:
-                    self.running = False
-                    quit()
+			# FPS: 60 olarak ayarla.
+			self.clock.tick(self.max_fps)
 
-            self.keys = pygame.key.get_pressed()
-            
-            self.player.move(self.keys)
+			# Eylemleri ve olayları yakala ve onlara göre işlem yap.
+			for event in pygame.event.get():
+				event: pygame.event.EventType = event
 
-            # Arka planı boya
-            self.screen.fill(self.bg_color)
+				# Çıkış yapılmak isteniyor ise...
+				if event.type == pygame.QUIT:
+					self.running = False
+					quit()
 
-            # Karakteri yükle
-            self.player.draw(self.screen)
+			self.keys = pygame.key.get_pressed()
+			self.player.move(self.keys)
 
-            for e in self.enemies:
-                e: Enemy = e
+				# Arka planı boya
+			self.screen.fill(self.bg_color)
 
-                if e.is_outsided():
-                    self.enemies.remove(e)
-                    self.dodged += 1
+				# Karakteri yükle
+			self.player.draw(self.screen)
 
-                    if self.dodged % 25 == 0:
-                        self.player.live += 1
+			for e in self.enemies:
+				e: Enemy = e
 
-                e.draw(self.screen)
+				if e.is_outsided():
+					self.enemies.remove(e)
+					self.dodged += 1
 
-                if self.collision.is_collied(e):
-                    self.enemies.remove(e)
-                    self.player.lost_live()
-                
-                if len(self.enemies) == 0:
-                    self.level += 1
-                    self.enemy_count += self.level
+					if self.dodged % 25 == 0:
+						self.player.live += 1
 
-                    self.enemies = self.create_enemies()
-            
-            self.player.show_live(self.screen)
+					if len(self.enemies) == 0:
+						self.level += 1
+						self.enemy_count += self.level
 
-            # Labellar
-            self.label1: Label = Label(f"Seviye: {self.level}", "Helvatica", 32, self.black)
-            self.label1.print(self.screen, (self.screen.get_width() - 10 - self.label1.text_width(), 10))
-            self.dodge_label: Label = Label(f"Kaçılan: {self.dodged}", "Helvatica", 32, self.black)
-            self.dodge_label.print(self.screen, (10, self.screen.get_height() - 10 - self.dodge_label.text_height()))
-            self.show_fps()
+						self.enemies = self.create_enemies()
 
-            # Ekranı tazele
-            pygame.display.update()
-    
-    def create_enemies(self) -> list:
-        """Düşmanları getiren metod"""
+				if self.collision.is_collied(e):
+					self.enemies.remove(e)
+					self.player.lost_live()
 
-        return [Enemy(self.level, self.screen) for x in range(0, self.enemy_count, 1)]
+					if len(self.enemies) == 0:
+						self.level += 1
+						self.enemy_count += self.level
 
-    def show_fps(self) -> None:
-        """Oyunun FPS değerini ekranda gösterir"""
+						self.enemies = self.create_enemies()
 
-        self.fps_label: Label = Label(
-            f"FPS: {int(self.clock.get_fps())}",
-            "Helvatica",
-            32,
-            (self.red if self.clock.get_fps() <= 25 else self.green)
-        )
-        
-        self.fps_label.print(
-            self.screen,
-            (
-                self.screen.get_width() - 10 - self.fps_label.text_width(),
-                self.screen.get_height() - 10 - self.fps_label.text_height()
-            )
-        )
+						self.player.show_live(self.screen)
+						
+				e.draw(self.screen)
+
+			# Labellar
+			self.player.show_live(self.screen)
+			self.label1: Label = Label(f"Seviye: {self.level}", "Helvatica", 32, self.black)
+			self.label1.print(self.screen, (self.screen.get_width() - 10 - self.label1.text_width(), 10))
+			self.dodge_label: Label = Label(f"Kaçılan: {self.dodged}", "Helvatica", 32, self.black)
+			self.dodge_label.print(self.screen, (10, self.screen.get_height() - 10 - self.dodge_label.text_height()))
+			self.show_fps()
+
+			# Ekranı tazele
+			pygame.display.update()
+
+	def create_enemies(self) -> list:
+		"""Düşmanları getiren metod"""
+
+		return [Enemy(self.level, self.screen) for x in range(0, self.enemy_count, 1)]
+
+	def show_fps(self) -> None:
+		"""Oyunun FPS değerini ekranda gösterir"""
+
+		self.fps_label: Label = Label(
+			f"FPS: {int(self.clock.get_fps())}",
+			"Helvatica",
+			32,
+			(self.red if self.clock.get_fps() <= 25 else self.green)
+		)
+
+		self.fps_label.print(
+			self.screen,
+			(
+				self.screen.get_width() - 10 - self.fps_label.text_width(),
+				self.screen.get_height() - 10 - self.fps_label.text_height()
+			)
+		)

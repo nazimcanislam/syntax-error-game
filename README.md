@@ -4,15 +4,14 @@
 
 Python'ın Pygame modülünü kullanarak yaptığım küçük bir oyun.
 
-### Oyun İçi Görünüm
 ![Oyun içi görünüm](assets/intro.png)
 
-### Oyunun Amacı
-Normalde Python'da mevcut olmayan anahtar kelimeler, operatör vesaire şeylerden sıyrılmalısınız (dodge). :D
+### Oyun Hakkında
+Oyunun **ana amacı**; normalde Python'da mevcut olmayan anahtar kelimeler, operatör vesaire şeylerden sıyrılmalısınız (dodge). 😃
 
-Oyun **yön tuşları** ve **WASD** ile oynanır.
+Oyun, **yön tuşları** veya **WASD** ile oynanır.
 
-Her 25 hatadan kaçtığınızda ekstra 1 can kazanırsınız.
+Her **25 hata**dan kaçtığınızda ekstra 1 can kazanırsınız.
 
 ### Kendi Adımı Yazmak İstiyorum?
 Bunun için `app.py` adlı dosyanın içindeki `name` değişkenini değiştiriniz.
@@ -23,7 +22,6 @@ import sys
 
 from util import terminal
 from util.game import Game
-from util.player import Player
 
 
 def main(*args: list, **kwargs: dict) -> None:
@@ -44,10 +42,6 @@ if __name__ == "__main__":
 
 ```
 
-### Gerekli Python Versiyonu ve Kütüphaneleri
-* Python==3.8.2
-* Pygame==1.9.6
-
 ### Oyunu Çalıştır
 
 **Windows** kullanıcıları bu yolu seçecek.
@@ -59,3 +53,27 @@ python app.py
 ```bath
 python3 app.py
 ```
+
+### Gerekli Python Versiyonu ve Kütüphaneleri
+* Python==3.8.2
+* Pygame==1.9.6
+* termcolor==1.1.0
+
+### Kütüphaneleri Kurmak
+
+**Windows** kullanıcıları kühüphane kurarken **pip** kullanmalı.
+```bash
+pip install pygame==1.9.6
+```
+
+**Linux** kullanıyorsanız, kullandığınız dağıtıma göre bir kullanım seçmelisiniz. Linux'da pip kullanımı öğrenmek için [buradan](https://www.tecmint.com/install-pip-in-linux/) kopya çekebilirsiniz 😃
+
+Örneğin **Ubuntu**'da böyle...
+```bash
+sudo apt-get install python-pygame==1.9.6
+```
+
+**MacOS** kullanıcıları [buraya](https://sourabhbajaj.com/mac-setup/Python/pip.html) göz atabilir.
+
+### Windows Kullanıyorum ve Python Kurulu Değil?
+Bi' zahmet [buradan](https://www.python.org/) hallediverin.

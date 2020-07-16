@@ -2,7 +2,6 @@ import sys
 
 from util import terminal
 from util.game import Game
-from util.player import Player
 
 
 def main(*args: list, **kwargs: dict) -> None:

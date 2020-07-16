@@ -7,7 +7,7 @@ pygame.font.init()
 class Label:
     def __init__(self, text: str, face: str, size: int, color: tuple):
         self.text: str = text
-        self.face: str = pygame.font.SysFont(face, size)
+        self.face: pygame.font.Font = pygame.font.SysFont(face, size)
         self.size: int = size
         self.color: tuple = color
         self.lbl: pygame.Surface = self.face.render(self.text, True, self.color)
@@ -21,8 +21,7 @@ class Label:
         window.blit(self.lbl, (self.x, self.y))
     
     def text_width(self) -> float:
-        n = self.lbl.get_width()
-        return n
+        return self.lbl.get_width()
 
     def text_height(self) -> float:
         return self.lbl.get_height()

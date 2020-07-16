@@ -1,6 +1,7 @@
 import pygame
 import os
 import random
+import termcolor
 
 from .label import Label
 
@@ -16,9 +17,18 @@ class Player:
         self.y: int = 80
         self.vel: int = 3
 
-        self.image_path: str = os.path.join("assets", "player.png")
-        self.image: pygame.Surface = pygame.image.load(self.image_path)
-        self.image = pygame.transform.smoothscale(self.image, (self.width, self.height))
+        try:
+            self.image_path: str = os.path.join("assets", "player.png")
+            self.image: pygame.Surface = pygame.image.load(self.image_path)
+            self.image = pygame.transform.smoothscale(self.image, (self.width, self.height))
+
+        except pygame.error:
+            print(termcolor.colored("HATA: Karakter resmi bulunamadı!", "red"))
+            print(termcolor.colored(f"İPUCU: Lütfen assets klasöründeki 'player.png' resmin olduğundan emin olun veya '{os.path.basename(__file__)}'' dosyasını kontrol edin...", "yellow"))
+            quit()
+        
+        except Exception:
+            print(termcolor.colored("HATA: Bilinmeyen bir hata meydana geldi!", "red"))
 
         self.black: tuple = (0, 0, 0)
 

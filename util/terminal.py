@@ -7,8 +7,8 @@ def clear() -> None:
 
     p: str = platform.system()
 
-    if p == "Windows":
+    if p.lower().startswith("windows"):
         os.system("cls")
     
-    elif p == "Linux" or p == "Darwin":
+    else:
         os.system("clear")
