@@ -118,7 +118,7 @@ class Game:
 
 						self.enemies = self.create_enemies()
 
-						self.player.show_live(self.window)
+						self.player.show_live()
 						
 				e.draw()
 
