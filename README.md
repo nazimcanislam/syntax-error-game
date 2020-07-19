@@ -57,7 +57,6 @@ python3 app.py
 ### Gerekli Python Versiyonu ve Kütüphaneleri
 * Python==3.8.2
 * Pygame==1.9.6
-* termcolor==1.1.0
 
 ### Kütüphaneleri Kurmak
 

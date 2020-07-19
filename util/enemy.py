@@ -2,12 +2,11 @@ import pygame
 import os
 import random
 
-from .label import Label
-
 
 class Enemy:
     def __init__(self, level: int, window: pygame.Surface):
         self.level: int = level
+        self.window: pygame.Surface = window
         self.names: tuple = ("Noktalı Virgül", "i Artı Artı", "Küme Açılış", "Küme Kapanış", "Switch Koşulu", "Bir Çeşit Döngü", "Java'nın Şeyi", "Dizi Döngüsü")
         self.marks: tuple = (";", "i++", "{", "}", "switch()", "do while", "implements", "foreach()")
 
@@ -15,26 +14,34 @@ class Enemy:
         self.current_name: str = self.names[self.choice]
         self.current_mark: str = self.marks[self.choice]
 
-        self.vel: int = random.uniform(2.0, 3.0)
+        self.vel: int = random.uniform(1.2, 1.8)
 
-        self.x: int = random.randint(window.get_width() + 100, 2500 + self.level * 100)
-        self.y: int = random.randint(50, window.get_height() - 50)
+        self.x: int = random.randint(self.window.get_width() + 100, 2500 + self.level * 100)
+        self.y: int = random.randint(50, self.window.get_height() - 100)
 
         """
         self.font: pygame.font.Font = pygame.font.SysFont("Times", 48)
         self.text: pygame.Surface = self.font.render(self.current_mark, True, (0, 0, 0))
         """
 
-        self.label: Label = Label(self.current_mark, "Times", 48, (0, 0, 0))
+        #self.label: Label = Label(self.current_mark, "Times", 48, (0, 0, 0))
+        self.font1: pygame.font.Font = pygame.font.SysFont("Times", 48)
+        self.font2: pygame.font.Font = pygame.font.SysFont("Helvetica", 18)
 
-        self.width: int = self.label.text_width()
-        self.height: int = self.label.text_height()
+        self.display: pygame.Surface = self.font1.render(self.current_mark, True, (0, 0, 0)).convert_alpha()
 
-    def draw(self, window: pygame.Surface) -> None:
+        self.width: int = self.display.get_width()
+        self.height: int = self.display.get_height()
+
+    def draw(self) -> None:
         """Düşmanın kendisini ekrana çizen metod"""
 
-        self.label.print(window, (self.x, self.y))
-        self.show_name(window)
+        self.display = self.font1.render(self.current_mark, True, (0, 0, 0)).convert_alpha()
+
+        self.width = self.display.get_width()
+        self.height = self.display.get_height()
+
+        self.window.blit(self.display, (self.x, self.y))
         
         self.move()
 
@@ -48,17 +55,15 @@ class Enemy:
 
         return self.x <= -50
     
-    def show_name(self, window: pygame.Surface) -> None:
+    def show_name(self) -> None:
         """Düşmanın ismini kafasında gösteren metod"""
 
-        self.showen_name: Label = Label(self.current_name, "Helvatica", 18, (0, 0, 0))
+        text: pygame.Surface = self.font2.render(self.current_name, True, (0, 0, 0)).convert_alpha()
 
-        # Burada; karakterin ismi, karakter resminin üzerinde durmasını sağladım. Biraz zor oldu ama neyse :P
-        
-        self.showen_name.print(
-            window=window,
-            position=(
-                self.x + self.label.text_width() // 2 - self.showen_name.text_width() // 2,
-                self.y - self.label.text_height() // 2 + self.showen_name.text_height()
+        self.window.blit(
+            text,
+            (
+                self.x + text.get_width() // 2 - self.display.get_width() // 2,
+                self.y - text.get_height() // 2 + self.display.get_height()
             )
         )

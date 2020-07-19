@@ -1,9 +1,8 @@
 import pygame
 import os
 import random
-import termcolor
 
-from .label import Label
+from .enemy import Enemy
 
 
 class Player:
@@ -12,15 +11,18 @@ class Player:
         self.width: int = 50
         self.height: int = 50
         self.live: int = live
+        self.window: pygame.Surface = window
 
         self.x: int = 30
         self.y: int = 80
-        self.vel: int = 3
+        self.vel: float = 1.6
 
         try:
             self.image_path: str = os.path.join("assets", "player.png")
-            self.image: pygame.Surface = pygame.image.load(self.image_path)
-            self.image = pygame.transform.smoothscale(self.image, (self.width, self.height))
+            self.image: pygame.Surface =  pygame.transform.smoothscale(
+                pygame.image.load(self.image_path),
+                (self.width, self.height)
+            ).convert_alpha()
 
         except pygame.error:
             print(termcolor.colored("HATA: Karakter resmi bulunamadı!", "red"))
@@ -30,14 +32,15 @@ class Player:
         except Exception:
             print(termcolor.colored("HATA: Bilinmeyen bir hata meydana geldi!", "red"))
 
-        self.black: tuple = (0, 0, 0)
-
         self.limits: dict = {
             "left": 10,
             "top": 50,
             "right": window.get_width() - 10 - self.width,
             "bottom": window.get_height() - 50
         }
+
+        self.font1: pygame.font.Font = pygame.font.SysFont("Helvetica", 18, True)
+        self.font2: pygame.font.Font = pygame.font.SysFont("Helvetica", 32, True)
 
     def move(self, keys: tuple) -> None:
         """Karakterin hareketini sağlayan metod"""
@@ -54,36 +57,42 @@ class Player:
         if (keys[pygame.K_DOWN] or keys[pygame.K_s]) and (self.y + self.height) < self.limits["bottom"]:
             self.y += self.vel
     
-    def show_name(self, window: pygame.Surface) -> None:
+    def show_name(self) -> None:
         """Karakterin ismini üstünde gösteren metod"""
 
-        self.showen_name: Label = Label(self.name, "Helvatica", 18, self.black)
-
-        # Burada; karakterin ismi, karakter resminin üzerinde durmasını sağladım. Biraz zor oldu ama neyse :P
-        
-        self.showen_name.print(
-            window=window,
-            position=(
-                self.x + self.width // 2 - self.showen_name.text_width() // 2,
-                self.y - self.height // 2 + self.showen_name.text_height() // 2
+        text: pygame.Surface = self.font1.render(self.name, True, (0, 0, 0)).convert_alpha()
+        self.window.blit(
+            text,
+            (
+                self.x + self.width // 2 - text.get_width() // 2,
+                self.y + self.height // 2 - text.get_height() // 2 - self.width + text.get_height() // 2,
             )
         )
     
-    def show_live(self, window: pygame.Surface) -> None:
+    def show_live(self) -> None:
         """Karakterin canını gösteren metod"""
 
-        self.live_label: Label = Label(f"Can: {self.live}", "Helvatica", 32, self.black)
+        self.window.blit(self.font2.render(f"Can: {self.live}", True, (0, 0, 0)).convert_alpha(), (10, 10))
 
-        self.live_label.print(window, (10, 10))
 
-    def draw(self, window: pygame.Surface) -> None:
+    def draw(self) -> None:
         """Karakteri yükleyen metod"""
 
-        window.blit(self.image, (self.x, self.y)) 
-        self.show_name(window)
+        self.window.blit(self.image, (self.x, self.y)) 
     
     def lost_live(self, value: int = 1) -> None:
         """Karakterin can kaybetme metodu"""
 
         if self.live > 0:
             self.live -= value
+
+    def is_collied(self, enemy: Enemy) -> bool:
+        """Karakter ile rakiplerin çarpışmasını kontrol eden metod"""
+        
+        # Teşekkürler!
+        # https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection
+        if (self.x < enemy.x + enemy.width) and \
+                (self.x + self.width > enemy.x) and \
+                    (self.y < enemy.y + enemy.height) and \
+                        (self.y + self.height > enemy.y):
+                        return True

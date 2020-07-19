@@ -1,12 +1,8 @@
 import pygame
 import os
-import termcolor
 
 from .player import Player
 from .enemy import Enemy
-from .sound import Sound
-from .label import Label
-from .collision import Collision
 
 
 # Araçları çalıştır!
@@ -31,54 +27,45 @@ class Game:
 		self.green: tuple = (0, 255, 0)
 
 		# Oyunun genişlik, yükleklik ve başlığını tanımla.
-		self.width: int = 1200
-		self.height: int = 800
+		self.width: int = 1280
+		self.height: int = 720
 		self.title: str = "Yazım Hatası"
 
 		# Pygame'in kendi Clock() sınıfından bir obje oluştur.
 		self.clock: pygame.time.Clock = pygame.time.Clock()  # Pygame Clock sınıfı
-		self.max_fps: int = 60
+		self.max_fps: int = 144
 
 		# Pencereyi oluştur.
-		self.screen: pygame.Surface = pygame.display.set_mode((self.width, self.height))
+		self.window: pygame.Surface = pygame.display.set_mode((self.width, self.height))
 		pygame.display.set_caption(self.title)
 
-		try:
-			self.favicon_image: pygame.Surface = pygame.image.load(os.path.join("assets", "favicon.png")			)
-			pygame.display.set_icon(pygame.transform.smoothscale(self.favicon_image, (128, 128)))
+		self.favicon_image: pygame.Surface = pygame.image.load(os.path.join("assets", "favicon.png")).convert_alpha()
+		pygame.display.set_icon(pygame.transform.scale(self.favicon_image, (128, 128)))
 
-		except pygame.error:
-			print(termcolor.colored("HATA: Favicon yüklenemedi!", "red"))
+		self.window.set_alpha(None)
 
-		self.player: Player = Player(self.player_name, 10, self.screen)
-		self.collision: Collision = Collision(self.player)
+		self.player: Player = Player(self.player_name, 10, self.window)
 
 		self.run()
 
 	def run(self) -> None:
 		"""Oyunu başlatın!"""
 
-		self.running: bool = True
-		self.keys: tuple = tuple()
+		self.font: pygame.font.Font = pygame.font.SysFont("Helvetica", 30, True)
 
-		self.bg_color: tuple = (240, 240, 240)
-
-		try:
-			self.bg_music: Sound = Sound("assets", "bg_music.wav")
-			self.bg_music.play_and_repeat()
-		
-		except FileNotFoundError:
-			print(termcolor.colored("HATA: Arka plan müzik dosyası bulunamadı!", "red"))
-			print(termcolor.colored(f"İPUCU: Lütfen assets klasöründeki 'bg_music.wav' bir müzik dosyası olduğuna emin olun veya '{os.path.basename(__file__)}'' dosyasını kontrol edin...", "yellow"))
-		
-		except Exception:
-			print(termcolor.colored("HATA: Bilinmeyen bir hata meydana geldi!"))
+		self.bg_music: pygame.mixer.Sound = pygame.mixer.Sound(f"{os.getcwd()}/assets/bg_music.wav")
+		self.bg_music.play(loops=-1)
 
 		self.level: int = 1
 		self.enemy_count: int = 3
 		self.dodged: int = 0
 
 		self.enemies: list = self.create_enemies()
+
+		pygame.event.set_allowed([pygame.QUIT])
+
+		self.running: bool = True
+		self.keys: tuple = tuple()
 
 		# Oyunun döngüsü burada :)
 		while self.running:
@@ -99,10 +86,11 @@ class Game:
 			self.player.move(self.keys)
 
 				# Arka planı boya
-			self.screen.fill(self.bg_color)
+			self.window.fill((240, 240, 240))
 
 				# Karakteri yükle
-			self.player.draw(self.screen)
+			self.player.draw()
+			self.player.show_name()
 
 			for e in self.enemies:
 				e: Enemy = e
@@ -120,7 +108,7 @@ class Game:
 
 						self.enemies = self.create_enemies()
 
-				if self.collision.is_collied(e):
+				if self.player.is_collied(e):
 					self.enemies.remove(e)
 					self.player.lost_live()
 
@@ -130,16 +118,18 @@ class Game:
 
 						self.enemies = self.create_enemies()
 
-						self.player.show_live(self.screen)
+						self.player.show_live(self.window)
 						
-				e.draw(self.screen)
+				e.draw()
 
-			# Labellar
-			self.player.show_live(self.screen)
-			self.label1: Label = Label(f"Seviye: {self.level}", "Helvatica", 32, self.black)
-			self.label1.print(self.screen, (self.screen.get_width() - 10 - self.label1.text_width(), 10))
-			self.dodge_label: Label = Label(f"Kaçılan: {self.dodged}", "Helvatica", 32, self.black)
-			self.dodge_label.print(self.screen, (10, self.screen.get_height() - 10 - self.dodge_label.text_height()))
+			self.player.show_live()
+
+			self.level_text: pygame.Surface = self.font.render(f"Seviye: {self.level}", True, (0, 0, 0)).convert_alpha()
+			self.window.blit(self.level_text, (self.window.get_width() - 10 - self.level_text.get_width(), 10))
+
+			self.dodge_text: pygame.Surface = self.font.render(f"Kaçılan: {self.dodged}", True, (0, 0, 0)).convert_alpha()
+			self.window.blit(self.dodge_text, (10, self.window.get_height() - 10 - self.dodge_text.get_height()))
+
 			self.show_fps()
 
 			# Ekranı tazele
@@ -148,22 +138,10 @@ class Game:
 	def create_enemies(self) -> list:
 		"""Düşmanları getiren metod"""
 
-		return [Enemy(self.level, self.screen) for x in range(0, self.enemy_count, 1)]
+		return [Enemy(self.level, self.window) for x in range(0, self.enemy_count, 1)]
 
 	def show_fps(self) -> None:
 		"""Oyunun FPS değerini ekranda gösterir"""
 
-		self.fps_label: Label = Label(
-			f"FPS: {int(self.clock.get_fps())}",
-			"Helvatica",
-			32,
-			(self.red if self.clock.get_fps() <= 25 else self.green)
-		)
-
-		self.fps_label.print(
-			self.screen,
-			(
-				self.screen.get_width() - 10 - self.fps_label.text_width(),
-				self.screen.get_height() - 10 - self.fps_label.text_height()
-			)
-		)
+		fps_text: pygame.Surface = self.font.render(f"FPS: {round(self.clock.get_fps())}", True, (0, 0, 0)).convert_alpha()
+		self.window.blit(fps_text, (self.window.get_width() - fps_text.get_width() - 10, self.window.get_height() - fps_text.get_height() - 10))
