@@ -52,6 +52,8 @@ class Game:
 		"""Oyunu başlatın!"""
 
 		self.font: pygame.font.Font = pygame.font.SysFont("Helvetica", 30, True)
+		self.font2: pygame.font.Font = pygame.font.SysFont("Arial", 64, True)
+		self.font3: pygame.font.Font = pygame.font.SysFont("Arial", 20, True)
 
 		self.bg_music: pygame.mixer.Sound = pygame.mixer.Sound(f"{os.getcwd()}/assets/bg_music.wav")
 		self.bg_music.play(loops=-1)
@@ -62,7 +64,7 @@ class Game:
 
 		self.enemies: list = self.create_enemies()
 
-		pygame.event.set_allowed([pygame.QUIT])
+		pygame.event.set_allowed([pygame.QUIT, pygame.KEYDOWN])
 
 		self.running: bool = True
 		self.keys: tuple = tuple()
@@ -81,6 +83,16 @@ class Game:
 				if event.type == pygame.QUIT:
 					self.running = False
 					quit()
+
+				if event.type == pygame.KEYDOWN and self.player.live == 0:
+					if event.key == pygame.K_r:
+						self.player.live = 10
+						self.level = 1
+						self.enemy_count: int = 3
+						self.dodged = 0
+						self.player.x = 30
+						self.player.y = 80
+						self.enemies = self.create_enemies()
 
 			self.keys = pygame.key.get_pressed()
 			self.player.move(self.keys)
@@ -122,8 +134,6 @@ class Game:
 						
 				e.draw()
 
-			self.player.show_live()
-
 			self.level_text: pygame.Surface = self.font.render(f"Seviye: {self.level}", True, (0, 0, 0)).convert_alpha()
 			self.window.blit(self.level_text, (self.window.get_width() - 10 - self.level_text.get_width(), 10))
 
@@ -131,6 +141,19 @@ class Game:
 			self.window.blit(self.dodge_text, (10, self.window.get_height() - 10 - self.dodge_text.get_height()))
 
 			self.show_fps()
+
+			self.player.show_live()
+
+			if self.player.live == 0:
+				self.enemies.clear()
+				lose_text: pygame.Surface = self.font2.render("Kaybettiniz!", True, (255, 0, 0)).convert_alpha()
+				replay_text: pygame.Surface = self.font.render("Tekrar oynamak için R'ye basınız...", True, (0, 0, 0)).convert_alpha()
+				dodged_text: pygame.Surface = self.font3.render(f"Toplam kaçılan: {self.dodged}", True, (0, 0, 0)).convert_alpha()
+
+				self.window.fill((240, 240, 240))
+				self.window.blit(lose_text, (self.window.get_width() // 2 - lose_text.get_width() // 2, 300))
+				self.window.blit(replay_text, (self.window.get_width() // 2 - replay_text.get_width() // 2, 400))
+				self.window.blit(dodged_text, (self.window.get_width() // 2 - dodged_text.get_width() // 2, 450))
 
 			# Ekranı tazele
 			pygame.display.update()
