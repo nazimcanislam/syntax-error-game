@@ -92,7 +92,6 @@ class Player:
         """Karakteri yükleyen metod"""
 
         self.window.blit(self.image, (self.x, self.y))
-        self.show_energy()
     
     def lost_live(self, value: int = 1) -> None:
         """Karakterin can kaybetme metodu"""
