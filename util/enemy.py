@@ -8,7 +8,7 @@ class Enemy:
         self.level: int = level
         self.window: pygame.Surface = window
 
-        self.marks: tuple = (";", "i++", "{", "}", "switch()", "do while", "implements", "foreach()")
+        self.marks: tuple = (";", "i++", "j++", "{", "}", "switch()", "do while", "implements", "foreach()", "public", "protected", "private", "void", "using", "namespace", "static", "final", "var")
         self.choice: int = random.randint(0, len(self.marks) - 1)
         self.current_mark: str = self.marks[self.choice]
 

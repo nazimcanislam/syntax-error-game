@@ -15,7 +15,8 @@ class Player:
 
         self.x: int = 30
         self.y: int = 80
-        self.vel: float = 1.6
+        self.vel: float = 1.0
+        self.run_vel: float = 0.8
 
         try:
             self.image_path: str = os.path.join("assets", "player.png")
@@ -46,16 +47,28 @@ class Player:
         """Karakterin hareketini sağlayan metod"""
 
         if (keys[pygame.K_LEFT] or keys[pygame.K_a]) and self.x > self.limits["left"]:
-            self.x -= self.vel
+            if keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]:
+                self.x -= self.vel + self.run_vel
+            else:
+                self.x -= self.vel
         
         if (keys[pygame.K_UP] or keys[pygame.K_w]) and self.y > self.limits["top"]:
-            self.y -= self.vel
+            if keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]:
+                self.y -= self.vel + self.run_vel
+            else:
+                self.y -= self.vel
 
         if (keys[pygame.K_RIGHT] or keys[pygame.K_d]) and self.x < self.limits["right"]:
-            self.x += self.vel
+            if keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]:
+                self.x += self.vel + self.run_vel
+            else:
+                self.x += self.vel
         
         if (keys[pygame.K_DOWN] or keys[pygame.K_s]) and (self.y + self.height) < self.limits["bottom"]:
-            self.y += self.vel
+            if keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]:
+                self.y += self.vel + self.run_vel
+            else:
+                self.y += self.vel
     
     def show_name(self) -> None:
         """Karakterin ismini üstünde gösteren metod"""
@@ -78,7 +91,8 @@ class Player:
     def draw(self) -> None:
         """Karakteri yükleyen metod"""
 
-        self.window.blit(self.image, (self.x, self.y)) 
+        self.window.blit(self.image, (self.x, self.y))
+        self.show_energy()
     
     def lost_live(self, value: int = 1) -> None:
         """Karakterin can kaybetme metodu"""
