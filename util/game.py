@@ -111,7 +111,7 @@ class Game:
 					self.enemies.remove(e)
 					self.dodged += 1
 
-					if self.dodged % 25 == 0:
+					if self.dodged % 50 == 0:
 						self.player.live += 5
 
 					if len(self.enemies) == 0:
