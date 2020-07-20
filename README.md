@@ -9,7 +9,7 @@ Python'ın Pygame modülünü kullanarak yaptığım küçük bir oyun.
 ### Oyun Hakkında
 Oyunun **ana amacı**; normalde Python'da mevcut olmayan anahtar kelimeler, operatör vesaire şeylerden sıyrılmalısınız (dodge). 😃
 
-Oyun, **yön tuşları** veya **WASD** ile oynanır.
+Oyun, **yön tuşları** veya **WASD** ile oynanır. Ve **SHIFT** tuşuna basılarak hızlı gidilebilir.
 
 Her **25 hata**dan kaçtığınızda ekstra 1 can kazanırsınız.
 
