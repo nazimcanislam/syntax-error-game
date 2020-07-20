@@ -112,7 +112,7 @@ class Game:
 					self.dodged += 1
 
 					if self.dodged % 25 == 0:
-						self.player.live += 1
+						self.player.live += 5
 
 					if len(self.enemies) == 0:
 						self.level += 1
@@ -120,7 +120,7 @@ class Game:
 
 						self.enemies = self.create_enemies()
 
-				if self.player.is_collied(e):
+				elif self.player.is_collied(e):
 					self.enemies.remove(e)
 					self.player.lost_live()
 
