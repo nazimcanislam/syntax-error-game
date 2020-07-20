@@ -33,7 +33,7 @@ class Game:
 
 		# Pygame'in kendi Clock() sınıfından bir obje oluştur.
 		self.clock: pygame.time.Clock = pygame.time.Clock()  # Pygame Clock sınıfı
-		self.max_fps: int = 144
+		self.max_fps: int = 250
 
 		# Pencereyi oluştur.
 		self.window: pygame.Surface = pygame.display.set_mode((self.width, self.height))
