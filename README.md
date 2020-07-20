@@ -2,8 +2,6 @@
 
 ---
 
-Python'ın Pygame modülünü kullanarak yaptığım küçük bir oyun.
-
 ![Oyun içi görünüm](assets/intro.png)
 ![Oyun içi kaybediş](assets/intro2.png)
 
