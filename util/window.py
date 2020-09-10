@@ -1,0 +1,50 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
+
+import os
+import typing
+import pygame
+import pygame.display
+
+
+class MyWindow:
+    """Oyunun penceresini oluşturma sınıfı"""
+
+    width: int
+    height: int
+    title: str
+    screen: pygame.Surface
+    favicon_image: pygame.Surface
+
+    def __init__(self, size: typing.Tuple[int], title: str, full_screen: bool = False):
+
+        # Oyunun genişlik, yükleklik ve başlığını tanımla.
+        self.width = size[0]
+        self.height = size[1]
+        self.title = title
+
+        # Ekranı ortala
+        os.environ['SDL_VIDEO_CENTERED'] = '1'
+
+        # Pencereyi oluştur
+        if full_screen:
+            self.screen = pygame.display.set_mode(
+                (self.width, self.height),
+                pygame.FULLSCREEN,
+            )
+        else:
+            self.screen = pygame.display.set_mode(
+                (self.width, self.height),
+            )
+        pygame.display.set_caption(self.title)
+
+        self.favicon_image = pygame.image.load(
+            os.path.join("assets", "favicon.png")).convert_alpha()
+        pygame.display.set_icon(pygame.transform.scale(
+            self.favicon_image, (128, 128)))
+
+    def get(self) -> pygame.Surface:
+        """Oyun penceresini al"""
+
+        return self.screen

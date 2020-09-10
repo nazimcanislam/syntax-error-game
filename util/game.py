@@ -1,170 +1,382 @@
-import pygame
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
+
+import typing
 import os
+import sys
+import pygame
+import pygame.time
+import pygame.display
+import pygame.event
+import pygame.font
+import pygame.mixer
+import pygame.draw
+import pygame.mouse
 
 from .player import Player
 from .enemy import Enemy
+from .button import Button
+from . import others
 
 
 # Araçları çalıştır!
 pygame.init()
+pygame.mixer.init()
+pygame.font.init()
 
 
 class Game:
-	"""Pygame oyunu yapmak için bir sınıf"""
+    """Pygame oyunu yapmak için bir sınıf"""
 
-	def __init__(self, player_name: str):
-		"""Oyunun inşaa etme metodu"""
+    max_fps: int
+    level: int
+    player_start_live: int
+    enemy_count: int
+    dodged: int
 
-		self.player_name: str = player_name
+    clock: pygame.time.Clock
 
-		# Ekranı ortala
-		os.environ['SDL_VIDEO_CENTERED'] = '1'
+    window: pygame.Surface
+    game_image_surface: pygame.Surface
+    button_play_surface: pygame.Surface
+    button_exit_surface: pygame.Surface
+    button_again_surface: pygame.Surface
+    button_main_menu_surface: pygame.Surface
 
-		# Renkler!
-		self.black: tuple = (0, 0, 0)
-		self.white: tuple = (255, 255, 255)
-		self.red: tuple = (255, 0, 0)
-		self.green: tuple = (0, 255, 0)
+    player: Player
 
-		# Oyunun genişlik, yükleklik ve başlığını tanımla.
-		self.width: int = 1280
-		self.height: int = 720
-		self.title: str = "Yazım Hatası"
+    font: pygame.font.Font
+    font2: pygame.font.Font
+    font3: pygame.font.Font
 
-		# Pygame'in kendi Clock() sınıfından bir obje oluştur.
-		self.clock: pygame.time.Clock = pygame.time.Clock()  # Pygame Clock sınıfı
-		self.max_fps: int = 250
+    bg_music: pygame.mixer.Sound
 
-		# Pencereyi oluştur.
-		self.window: pygame.Surface = pygame.display.set_mode((self.width, self.height))
-		pygame.display.set_caption(self.title)
+    enemies: typing.List[Enemy]
 
-		self.favicon_image: pygame.Surface = pygame.image.load(os.path.join("assets", "favicon.png")).convert_alpha()
-		pygame.display.set_icon(pygame.transform.scale(self.favicon_image, (128, 128)))
+    playing: bool
+    menu: bool
+    death_menu: bool
 
-		self.window.set_alpha(None)
+    keys: tuple
 
-		self.player: Player = Player(self.player_name, 10, self.window)
+    button_play: Button
+    button_exit: Button
+    button_again: Button
+    button_main_menu: Button
 
-		self.run()
+    def __init__(self, window: pygame.Surface, player: Player):
+        """Oyunun inşaa etme metodu"""
 
-	def run(self) -> None:
-		"""Oyunu başlatın!"""
+        # Pygame'in kendi Clock() sınıfından bir obje oluştur.
+        self.clock = pygame.time.Clock()  # Pygame Clock sınıfı
+        self.max_fps = 250
 
-		self.font: pygame.font.Font = pygame.font.SysFont("Helvetica", 30, True)
-		self.font2: pygame.font.Font = pygame.font.SysFont("Arial", 64, True)
-		self.font3: pygame.font.Font = pygame.font.SysFont("Arial", 20, True)
+        # Pencereyi oluştur.
+        self.window = window
+        self.window.set_alpha(None)
 
-		self.bg_music: pygame.mixer.Sound = pygame.mixer.Sound(f"{os.getcwd()}/assets/bg_music.wav")
-		self.bg_music.play(loops=-1)
+        self.player = player
+        self.player_start_live = self.player.live
 
-		self.level: int = 1
-		self.enemy_count: int = 3
-		self.dodged: int = 0
+        self.font = pygame.font.SysFont('Helvetica', 30, True)
+        self.font2 = pygame.font.SysFont('Arial', 64, True)
+        self.font3 = pygame.font.SysFont('Arial', 20, True)
 
-		self.enemies: list = self.create_enemies()
+        self.bg_music = pygame.mixer.Sound(
+            f'{os.getcwd()}/assets/bg_music.wav')
 
-		pygame.event.set_allowed([pygame.QUIT, pygame.KEYDOWN])
+        self.game_image_surface = pygame.transform.smoothscale(pygame.image.load(
+            'assets/game_image.png').convert_alpha(), (450, 193))
 
-		self.running: bool = True
-		self.keys: tuple = tuple()
+        self.button_play_surface = pygame.transform.smoothscale(pygame.image.load(
+            'assets/button_play.png').convert_alpha(), (250, 100))
+        self.button_play = Button(
+            self.window,
+            self.button_play_surface,
+            [
+                self.window.get_width() // 2 - self.button_play_surface.get_width() // 2,
+                100 + self.game_image_surface.get_height() + 50,
+            ],
+            [
+                self.button_play_surface.get_width(),
+                self.button_play_surface.get_height(),
+            ],
+        )
 
-		# Oyunun döngüsü burada :)
-		while self.running:
+        self.button_exit_surface = pygame.transform.smoothscale(pygame.image.load(
+            'assets/button_exit.png').convert_alpha(), (250, 100))
+        self.button_exit = Button(
+            self.window,
+            self.button_exit_surface,
+            [
+                self.window.get_width() // 2 - self.button_exit_surface.get_width() // 2,
+                100 + self.game_image_surface.get_height() + 50 +
+                self.button_play_surface.get_height() + 10,
+            ],
+            [
+                self.button_exit_surface.get_width(),
+                self.button_exit_surface.get_height(),
+            ],
+        )
 
-			# FPS: 60 olarak ayarla.
-			self.clock.tick(self.max_fps)
+        self.button_again_surface = pygame.transform.smoothscale(pygame.image.load(
+            'assets/button_again.png').convert_alpha(), (250, 100))
+        self.button_again = Button(
+            self.window,
+            self.button_again_surface,
+            [
+                self.window.get_width() // 2 - self.button_again_surface.get_width() // 2,
+                self.window.get_height() // 2 - self.button_again_surface.get_height() // 2,
+            ],
+            [
+                self.button_again_surface.get_width(),
+                self.button_again_surface.get_height(),
+            ],
+        )
 
-			# Eylemleri ve olayları yakala ve onlara göre işlem yap.
-			for event in pygame.event.get():
-				event: pygame.event.EventType = event
+        self.button_main_menu_surface = pygame.transform.smoothscale(pygame.image.load(
+            'assets/button_main_menu.png').convert_alpha(), (250, 100))
+        self.button_main_menu = Button(
+            self.window,
+            self.button_main_menu_surface,
+            [
+                self.window.get_width() // 2 - self.button_main_menu_surface.get_width() // 2,
+                self.window.get_height() // 2 - self.button_main_menu_surface.get_height() // 2 +
+                self.button_again_surface.get_height() + 10,
+            ],
+            [
+                self.button_main_menu_surface.get_width(),
+                self.button_main_menu_surface.get_height(),
+            ],
+        )
 
-				# Çıkış yapılmak isteniyor ise...
-				if event.type == pygame.QUIT:
-					self.running = False
-					quit()
+    def start(self) -> None:
+        """Oyunu başlatın!"""
 
-				if event.type == pygame.KEYDOWN and self.player.live == 0:
-					if event.key == pygame.K_r:
-						self.player.live = 10
-						self.level = 1
-						self.enemy_count: int = 3
-						self.dodged = 0
-						self.player.x = 30
-						self.player.y = 80
-						self.enemies = self.create_enemies()
+        self.bg_music.play(loops=-1)
 
-			self.keys = pygame.key.get_pressed()
-			self.player.move(self.keys)
+        self.level = 1
+        self.enemy_count = 3
+        self.dodged = 0
 
-				# Arka planı boya
-			self.window.fill((240, 240, 240))
+        self.enemies = self.create_enemies()
 
-				# Karakteri yükle
-			self.player.draw()
-			self.player.show_name()
+        pygame.event.set_allowed(
+            [pygame.QUIT, pygame.KEYDOWN, pygame.MOUSEBUTTONDOWN])
 
-			for e in self.enemies:
-				e: Enemy = e
+        self.menu = True
+        self.playing = False
+        self.keys = tuple()
 
-				if e.is_outsided():
-					self.enemies.remove(e)
-					self.dodged += 1
+        self.menu_loop()
 
-					if self.dodged % 50 == 0:
-						self.player.live += 5
+    def death_menu_loop(self) -> None:
+        """Ölüm ekranı döngüsü"""
 
-					if len(self.enemies) == 0:
-						self.level += 1
-						self.enemy_count += self.level
+        while self.death_menu:
+            self.event_handler()
+            self.window.fill(others.BACKGROUND_COLOR)
 
-						self.enemies = self.create_enemies()
+            dodged_text: pygame.Surface = self.font2.render(
+                f'Toplam Kaçılan: {self.dodged}', True, others.BLACK)
+            self.window.blit(
+                dodged_text,
+                (
+                    self.window.get_width() // 2 - dodged_text.get_width() // 2,
+                    self.window.get_height() // 2 - dodged_text.get_height() // 2 - 120,
+                )
+            )
 
-				elif self.player.is_collied(e):
-					self.enemies.remove(e)
-					self.player.lost_live()
+            self.button_again.draw()
+            self.button_main_menu.draw()
 
-					if len(self.enemies) == 0:
-						self.level += 1
-						self.enemy_count += self.level
+            self.redraw_window()
 
-						self.enemies = self.create_enemies()
+    def menu_loop(self) -> None:
+        """Menü döngüsü"""
 
-						self.player.show_live()
-						
-				e.draw()
+        while self.menu:
 
-			self.level_text: pygame.Surface = self.font.render(f"Seviye: {self.level}", True, (0, 0, 0)).convert_alpha()
-			self.window.blit(self.level_text, (self.window.get_width() - 10 - self.level_text.get_width(), 10))
+            self.event_handler()
 
-			self.dodge_text: pygame.Surface = self.font.render(f"Kaçılan: {self.dodged}", True, (0, 0, 0)).convert_alpha()
-			self.window.blit(self.dodge_text, (10, self.window.get_height() - 10 - self.dodge_text.get_height()))
+            # Arka planı boya
+            self.window.fill(others.BACKGROUND_COLOR)
 
-			self.show_fps()
+            self.window.blit(self.game_image_surface, (self.window.get_width(
+            ) // 2 - self.game_image_surface.get_width() // 2, 100))
 
-			self.player.show_live()
+            self.button_play.draw()
+            self.button_exit.draw()
 
-			if self.player.live == 0:
-				self.enemies.clear()
-				lose_text: pygame.Surface = self.font2.render("Kaybettiniz!", True, (255, 0, 0)).convert_alpha()
-				replay_text: pygame.Surface = self.font.render("Tekrar oynamak için R'ye basınız...", True, (0, 0, 0)).convert_alpha()
-				dodged_text: pygame.Surface = self.font3.render(f"Toplam kaçılan: {self.dodged}", True, (0, 0, 0)).convert_alpha()
+            self.redraw_window()
 
-				self.window.fill((240, 240, 240))
-				self.window.blit(lose_text, (self.window.get_width() // 2 - lose_text.get_width() // 2, 300))
-				self.window.blit(replay_text, (self.window.get_width() // 2 - replay_text.get_width() // 2, 400))
-				self.window.blit(dodged_text, (self.window.get_width() // 2 - dodged_text.get_width() // 2, 450))
+    def game_loop(self) -> None:
+        """Oyun döngüsü"""
 
-			# Ekranı tazele
-			pygame.display.update()
+        # Oyunun döngüsü burada :)
+        while self.playing:
+            self.event_handler()
 
-	def create_enemies(self) -> list:
-		"""Düşmanları getiren metod"""
+            self.keys = pygame.key.get_pressed()
+            self.player.move(self.keys)
 
-		return [Enemy(self.level, self.window) for x in range(0, self.enemy_count, 1)]
+            # Arka planı boya
+            self.window.fill(others.BACKGROUND_COLOR)
 
-	def show_fps(self) -> None:
-		"""Oyunun FPS değerini ekranda gösterir"""
+            # Karakteri yükle
+            self.player.draw()
+            self.player.show_name()
 
-		fps_text: pygame.Surface = self.font.render(f"FPS: {round(self.clock.get_fps())}", True, (0, 0, 0)).convert_alpha()
-		self.window.blit(fps_text, (self.window.get_width() - fps_text.get_width() - 10, self.window.get_height() - fps_text.get_height() - 10))
+            for e in self.enemies:
+                if e.is_outsided():
+                    self.enemies.remove(e)
+                    self.dodged += 1
+
+                    if self.dodged % 50 == 0:
+                        self.player.live += 5
+
+                    if len(self.enemies) == 0:
+                        self.level += 1
+                        self.enemy_count += self.level
+
+                        self.enemies = self.create_enemies()
+
+                elif self.player.is_collied(e):
+                    self.enemies.remove(e)
+                    self.player.lost_live()
+
+                    if len(self.enemies) == 0:
+                        self.level += 1
+                        self.enemy_count += self.level
+
+                        self.enemies = self.create_enemies()
+
+                        self.player.show_live()
+
+                e.draw()
+
+            self.level_text: pygame.Surface = self.font.render(
+                f"Seviye: {self.level}", True, (0, 0, 0)).convert_alpha()
+            self.window.blit(self.level_text, (self.window.get_width(
+            ) - 10 - self.level_text.get_width(), 10))
+
+            self.dodge_text: pygame.Surface = self.font.render(
+                f"Kaçılan: {self.dodged}", True, (0, 0, 0)).convert_alpha()
+            self.window.blit(self.dodge_text, (10, self.window.get_height(
+            ) - 10 - self.dodge_text.get_height()))
+
+            self.player.show_live()
+
+            if self.player.live == 0:
+                """
+                self.enemies.clear()
+                lose_text: pygame.Surface = self.font2.render(
+                    "Kaybettiniz!", True, (255, 0, 0)).convert_alpha()
+                replay_text: pygame.Surface = self.font.render(
+                    "Tekrar oynamak için R'ye basınız...", True, (0, 0, 0)).convert_alpha()
+                dodged_text: pygame.Surface = self.font3.render(
+                    f"Toplam kaçılan: {self.dodged}", True, (0, 0, 0)).convert_alpha()
+
+                self.window.blit(
+                    lose_text, (self.window.get_width() // 2 - lose_text.get_width() // 2, 300))
+                self.window.blit(replay_text, (self.window.get_width(
+                ) // 2 - replay_text.get_width() // 2, 400))
+                self.window.blit(dodged_text, (self.window.get_width(
+                ) // 2 - dodged_text.get_width() // 2, 450))
+                """
+
+                self.menu = False
+                self.playing = False
+                self.death_menu = True
+                self.death_menu_loop()
+
+            self.redraw_window()
+
+    def redraw_window(self) -> None:
+        """Ekranı tazeleyen metod"""
+
+        # FPS değerini ekranda göster
+        self.show_fps()
+
+        # Ekranı tazele
+        pygame.display.update()
+
+        # FPS: 60 olarak ayarla.
+        self.clock.tick(self.max_fps)
+
+    def event_handler(self) -> None:
+        """Eylemleri kontrol eden metod"""
+
+        # Eylemleri ve olayları yakala ve onlara göre işlem yap.
+        events: typing.List[pygame.event.Event] = pygame.event.get()
+        for event in events:
+
+            # Çıkış yapılmak isteniyor ise...
+            if event.type == pygame.QUIT:
+                self.quit()
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if self.menu:
+                    if self.button_play.is_clicked():
+                        self.show_playing_screen()
+                    elif self.button_exit.is_clicked():
+                        pygame.quit()
+                        sys.exit(0)
+                elif self.death_menu:
+                    if self.button_again.is_clicked():
+                        self.show_playing_screen()
+                    elif self.button_main_menu.is_clicked():
+                        self.show_menu()
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    if self.playing:
+                        self.show_menu()
+                    elif self.menu:
+                        self.quit()
+                    elif self.death_menu:
+                        self.show_menu()
+
+    def show_menu(self) -> None:
+        self.menu = True
+        self.playing = False
+        self.death_menu = False
+        self.reset_all()
+        self.menu_loop()
+
+    def show_playing_screen(self) -> None:
+        self.death_menu = False
+        self.playing = True
+        self.game_loop()
+
+    def create_enemies(self) -> list:
+        """Düşmanları getiren metod"""
+
+        return [Enemy(self.level, self.window) for x in range(0, self.enemy_count, 1)]
+
+    def show_fps(self) -> None:
+        """Oyunun FPS değerini ekranda gösterir"""
+
+        fps_text: pygame.Surface = self.font.render(
+            f"FPS: {round(self.clock.get_fps())}", True, (0, 0, 0)).convert_alpha()
+        self.window.blit(fps_text, (self.window.get_width(
+        ) - fps_text.get_width() - 10, self.window.get_height() - fps_text.get_height() - 10))
+
+    def quit(self) -> None:
+        """Oyundan çıkma metodu"""
+
+        self.playing = False
+        pygame.quit()
+        sys.exit(0)
+
+    def reset_all(self) -> None:
+        """Oyun değerlerini sıfırla"""
+
+        self.player.live = self.player_start_live
+        self.level = 1
+        self.enemy_count: int = 3
+        self.dodged = 0
+        self.player.x = 30
+        self.player.y = 80
+        self.enemies = self.create_enemies()
