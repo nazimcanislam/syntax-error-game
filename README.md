@@ -2,14 +2,9 @@
 
 ---
 
-<<<<<<< HEAD
 ![Oyun içi menü](assets/intro0.png)
 ![Oyun içi oynanış](assets/intro1.png)
 ![Oyun içi ölüş](assets/intro2.png)
-=======
-![Oyun içi görünüm](assets/intro.png)
-![Oyun içi kaybediş](assets/intro2.png)
->>>>>>> 28ad4829b23b1003761319894691e1b86017c8fe
 
 ### Oyun Hakkında
 
