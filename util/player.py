@@ -4,6 +4,7 @@
 
 import pygame
 import os
+import os.path
 import sys
 import random
 import termcolor

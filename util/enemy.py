@@ -1,11 +1,14 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-
-import pygame
 import os
 import random
 import typing
+import pygame
+import pygame.font
+
+
+pygame.font.init()
 
 
 class Enemy:

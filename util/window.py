@@ -3,6 +3,7 @@
 
 
 import os
+import os.path
 import typing
 import pygame
 import pygame.display

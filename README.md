@@ -30,8 +30,8 @@ python3 app.py
 
 ### Gerekli Python Versiyonu ve Kütüphaneleri
 
--   Python==3.8.4
--   Pygame==1.9.6
+-   python==3.8.4
+-   pygame==1.9.6
 
 ### Kütüphaneleri Kurmak
 
