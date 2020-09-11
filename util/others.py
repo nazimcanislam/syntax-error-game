@@ -17,10 +17,7 @@ BACKGROUND_COLOR: tuple = (240, 240, 240)
 def clear_terminal() -> None:
     """Terminal ekranını temizler."""
 
-    p: str = platform.system()
-
-    if p.lower().startswith("windows"):
+    if platform.system().lower().startswith('win'):
         os.system("cls")
-
     else:
         os.system("clear")

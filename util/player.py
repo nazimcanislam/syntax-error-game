@@ -48,13 +48,11 @@ class Player:
                 pygame.image.load(self.image_path),
                 (self.width, self.height)
             ).convert_alpha()
-
         except pygame.error:
             print(termcolor.colored("HATA: Karakter resmi bulunamadı!", "red"))
             print(termcolor.colored(
                 f"İPUCU: Lütfen assets klasöründeki 'player.png' resmin olduğundan emin olun veya '{os.path.basename(__file__)}'' dosyasını kontrol edin...", "yellow"))
             sys.exit(0)
-
         except Exception:
             print(termcolor.colored(
                 "HATA: Bilinmeyen bir hata meydana geldi!", "red"))
