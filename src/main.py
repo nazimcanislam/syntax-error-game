@@ -1,13 +1,12 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-import sys
 import pygame
 
-from util import others
-from util.game import Game
-from util.player import Player
-from util.window import MyWindow
+from src import others
+from src.game import Game
+from src.player import Player
+from src.window import MyWindow
 
 
 def main(*args: list, **kwargs: dict) -> None:
@@ -25,8 +24,3 @@ def main(*args: list, **kwargs: dict) -> None:
     # Oyun objesi oluştur
     game: Game = Game(window, player)
     game.start()
-
-
-# Oyunu başlat!
-if __name__ == '__main__':
-    main(sys.argv)

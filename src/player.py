@@ -9,7 +9,7 @@ import sys
 import random
 import termcolor
 
-from .enemy import Enemy
+from src.enemy import Enemy
 
 
 class Player:

@@ -14,10 +14,10 @@ import pygame.mixer
 import pygame.draw
 import pygame.mouse
 
-from .player import Player
-from .enemy import Enemy
-from .button import Button
-from . import others
+from src import others
+from src.player import Player
+from src.enemy import Enemy
+from src.button import Button
 
 
 # Araçları çalıştır!
