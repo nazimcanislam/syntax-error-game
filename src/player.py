@@ -7,7 +7,6 @@ import os
 import os.path
 import sys
 import random
-import termcolor
 
 from src.enemy import Enemy
 from src import others
@@ -50,13 +49,12 @@ class Player:
                 (self.width, self.height)
             ).convert_alpha()
         except pygame.error:
-            print(termcolor.colored("HATA: Karakter resmi bulunamadı!", "red"))
-            print(termcolor.colored(
-                f"İPUCU: Lütfen assets klasöründeki 'player.png' resmin olduğundan emin olun veya '{os.path.basename(__file__)}'' dosyasını kontrol edin...", "yellow"))
+            print("HATA: Karakter resmi bulunamadı!")
+            print(
+                f"İPUCU: Lütfen assets klasöründeki 'player.png' resmin olduğundan emin olun veya '{os.path.basename(__file__)}'' dosyasını kontrol edin...")
             sys.exit(0)
         except Exception:
-            print(termcolor.colored(
-                "HATA: Bilinmeyen bir hata meydana geldi!", "red"))
+            print("HATA: Bilinmeyen bir hata meydana geldi!")
 
         self.limits = {
             "left": 10,
@@ -135,6 +133,6 @@ class Player:
         # https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection
         if (self.x < enemy.x + enemy.width) and \
                 (self.x + self.width > enemy.x) and \
-            (self.y < enemy.y + enemy.height) and \
+        (self.y < enemy.y + enemy.height) and \
                 (self.y + self.height > enemy.y):
             return True
