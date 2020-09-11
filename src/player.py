@@ -10,6 +10,7 @@ import random
 import termcolor
 
 from src.enemy import Enemy
+from src import others
 
 
 class Player:
@@ -39,8 +40,8 @@ class Player:
 
         self.x = 30
         self.y = 80
-        self.vel = 1.0
-        self.run_vel = 0.8
+        self.vel = 4.0
+        self.run_vel = 1.2
 
         try:
             self.image_path = os.path.join("assets", "player.png")
@@ -100,7 +101,7 @@ class Player:
         """Karakterin ismini üstünde gösteren metod"""
 
         text: pygame.Surface = self.font1.render(
-            self.name, True, (0, 0, 0)).convert_alpha()
+            self.name, True, others.BLACK).convert_alpha()
         self.window.blit(
             text,
             (
@@ -114,7 +115,7 @@ class Player:
         """Karakterin canını gösteren metod"""
 
         self.window.blit(self.font2.render(
-            f"Can: {self.live}", True, (0, 0, 0)).convert_alpha(), (10, 10))
+            f"Can: {self.live}", True, others.BLACK).convert_alpha(), (10, 10))
 
     def draw(self) -> None:
         """Karakteri yükleyen metod"""
@@ -134,6 +135,6 @@ class Player:
         # https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection
         if (self.x < enemy.x + enemy.width) and \
                 (self.x + self.width > enemy.x) and \
-        (self.y < enemy.y + enemy.height) and \
+            (self.y < enemy.y + enemy.height) and \
                 (self.y + self.height > enemy.y):
             return True

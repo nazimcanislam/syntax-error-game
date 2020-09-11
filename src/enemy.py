@@ -31,18 +31,18 @@ class Enemy:
         self.level = level
         self.window = window
 
-        self.marks = (";", "i++", "j++", "{", "}", "switch()", "do while", "implements", "foreach()",
-                      "public", "protected", "private", "void", "using", "namespace", "static", "final", "var", "let", "const", "catch", "throw")
+        self.marks = (";", "i++", "j++", "{", "}", "switch()", "do while", "implements", "foreach()", "public", "protected", "private", "void", "using", "namespace",
+                      "static", "final", "var", "let", "const", "catch", "throw", "new", "string[]", "int[]", "short", "byte", "long", "double", "char", "char[]")
         self.choice = random.randint(0, len(self.marks) - 1)
         self.current_mark = self.marks[self.choice]
 
-        self.vel = random.uniform(1.2, 1.8)
+        self.vel = random.uniform(4.0, 7.0)
 
         self.x = random.randint(
             self.window.get_width() + 100, 2500 + self.level * 100)
         self.y = random.randint(50, self.window.get_height() - 100)
 
-        self.font1 = pygame.font.SysFont("Times", 48)
+        self.font1 = pygame.font.SysFont("Times New Roman", 48)
 
         self.display = self.font1.render(
             self.current_mark, True, (0, 0, 0)).convert_alpha()
@@ -66,4 +66,4 @@ class Enemy:
     def is_outsided(self) -> bool:
         """Düşman sol tarafntan yani ekrandan çıktı mı?"""
 
-        return self.x <= -50
+        return self.x + self.width <= 0
