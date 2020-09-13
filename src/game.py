@@ -138,9 +138,9 @@ class Game:
         self.menu = True
         self.playing = False
 
-        self.menu_loop()
+        self.__menu_loop()
 
-    def __death_menu_loop(self):
+    def __death___menu_loop(self):
         """Ölüm ekranı döngüsü"""
 
         self.bg_music.set_volume(0.5)
@@ -164,7 +164,7 @@ class Game:
 
             self.__redraw_window()
 
-    def pasue_menu_loop(self):
+    def pasue___menu_loop(self):
         """Oyunun durdurma ekranı"""
 
         self.bg_music.set_volume(0.6)
@@ -188,7 +188,7 @@ class Game:
 
             self.__redraw_window()
 
-    def menu_loop(self):
+    def __menu_loop(self):
         """Menü döngüsü"""
 
         self.bg_music.set_volume(0.5)
@@ -208,7 +208,7 @@ class Game:
 
             self.__redraw_window()
 
-    def game_loop(self):
+    def __game_loop(self):
         """Oyun döngüsü"""
 
         self.bg_music.set_volume(1.0)
@@ -323,7 +323,7 @@ class Game:
         self.playing = False
         self.death_menu = False
         self.__reset_all()
-        self.menu_loop()
+        self.__menu_loop()
 
     def __show_playing_screen(self):
         """Oynanış ekranını göster"""
@@ -332,7 +332,7 @@ class Game:
         self.pasue_menu = False
         self.death_menu = False
         self.playing = True
-        self.game_loop()
+        self.__game_loop()
 
     def __show_pasue_menu(self):
         """Oyunu durdurma menüsünü göster"""
@@ -341,7 +341,7 @@ class Game:
         self.death_menu = False
         self.playing = False
         self.pasue_menu = True
-        self.pasue_menu_loop()
+        self.pasue___menu_loop()
 
     def __show_death_menu(self):
         """Ölüm ekranının menüsünü göster"""
@@ -350,7 +350,7 @@ class Game:
         self.pasue_menu = False
         self.death_menu = True
         self.playing = False
-        self.__death_menu_loop()
+        self.__death___menu_loop()
 
     def __create_enemies(self):
         """Düşmanları getiren metod"""
