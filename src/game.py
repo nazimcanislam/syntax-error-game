@@ -38,16 +38,16 @@ class Game:
         # Pencereyi oluştur.
         self.window = window
         self.window.set_alpha(None)
-        pygame.event.set_allowed([pygame.QUIT, pygame.KEYDOWN, pygame.MOUSEBUTTONDOWN])
+        pygame.event.set_allowed([pygame.__quit, pygame.KEYDOWN, pygame.MOUSEBUTTONDOWN])
 
         self.player = player
         self.player_start_live = self.player.live
 
         self.bg_music = pygame.mixer.Sound(f'{os.getcwd()}/assets/bg_music.wav')
 
-        self.init_menu_components()
+        self.__init_menu_components()
 
-    def init_menu_components(self):
+    def __init_menu_components(self):
         """Menü elemanlarını oluştur"""
 
         self.game_image_surface = pygame.transform.smoothscale(pygame.image.load('assets/game_image.png').convert_alpha(), (450, 193))
@@ -133,22 +133,21 @@ class Game:
         self.enemy_count = 3
         self.dodged = 0
 
-        self.enemies = self.create_enemies()
+        self.enemies = self.__create_enemies()
 
         self.menu = True
         self.playing = False
-        self.keys = tuple()
 
         self.menu_loop()
 
-    def death_menu_loop(self):
+    def __death_menu_loop(self):
         """Ölüm ekranı döngüsü"""
 
         self.bg_music.set_volume(0.5)
         pygame.mouse.set_visible(True)
 
         while self.death_menu:
-            self.event_handler()
+            self.__event_handler()
             self.window.fill(BACKGROUND_COLOR)
 
             dodged_text = FONT32.render(f'Toplam Kaçılan: {self.dodged}', True, BLACK)
@@ -163,7 +162,7 @@ class Game:
             self.button_again.draw()
             self.button_main_menu.draw()
 
-            self.redraw_window()
+            self.__redraw_window()
 
     def pasue_menu_loop(self):
         """Oyunun durdurma ekranı"""
@@ -172,7 +171,7 @@ class Game:
         pygame.mouse.set_visible(True)
 
         while self.pasue_menu:
-            self.event_handler()
+            self.__event_handler()
             self.window.fill(BACKGROUND_COLOR)
 
             waiting_text: pygame.Surface = FONT64.render('Seni burda bekliyorum!', True, BLACK)
@@ -187,7 +186,7 @@ class Game:
             self.button_resume.draw()
             self.button_main_menu.draw()
 
-            self.redraw_window()
+            self.__redraw_window()
 
     def menu_loop(self):
         """Menü döngüsü"""
@@ -196,7 +195,7 @@ class Game:
         pygame.mouse.set_visible(True)
 
         while self.menu:
-            self.event_handler()
+            self.__event_handler()
 
             # Arka planı boya
             self.window.fill(BACKGROUND_COLOR)
@@ -207,7 +206,7 @@ class Game:
             self.button_play.draw()
             self.button_exit.draw()
 
-            self.redraw_window()
+            self.__redraw_window()
 
     def game_loop(self):
         """Oyun döngüsü"""
@@ -217,7 +216,7 @@ class Game:
 
         # Oyunun döngüsü burada :)
         while self.playing:
-            self.event_handler()
+            self.__event_handler()
 
             self.keys = pygame.key.get_pressed()
             self.player.move(self.keys)
@@ -240,7 +239,7 @@ class Game:
                     if len(self.enemies) == 0:
                         self.level += 1
                         self.enemy_count += self.level
-                        self.enemies = self.create_enemies()
+                        self.enemies = self.__create_enemies()
                 elif self.player.is_collied(e):
                     self.enemies.remove(e)
                     self.player.lost_live()
@@ -248,7 +247,7 @@ class Game:
                     if len(self.enemies) == 0:
                         self.level += 1
                         self.enemy_count += self.level
-                        self.enemies = self.create_enemies()
+                        self.enemies = self.__create_enemies()
                         self.player.show_live()
 
                 e.draw()
@@ -262,15 +261,15 @@ class Game:
             self.player.show_live()
 
             if self.player.live == 0:
-                self.show_death_menu()
+                self.__show_death_menu()
 
-            self.redraw_window()
+            self.__redraw_window()
 
-    def redraw_window(self):
+    def __redraw_window(self):
         """Ekranı tazeleyen metod"""
 
         # FPS değerini ekranda göster
-        self.show_fps()
+        self.__show_fps()
 
         # Ekranı tazele
         pygame.display.update()
@@ -278,55 +277,55 @@ class Game:
         # FPS: 60 olarak ayarla.
         self.clock.tick(self.max_fps)
 
-    def event_handler(self):
+    def __event_handler(self):
         """Eylemleri kontrol eden metod"""
 
         # Eylemleri ve olayları yakala ve onlara göre işlem yap.
         for event in pygame.event.get():
             # Çıkış yapılmak isteniyor ise...
-            if event.type == pygame.QUIT:
-                self.quit()
+            if event.type == pygame.__quit:
+                self.__quit()
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if self.menu:
                     if self.button_play.is_clicked():
-                        self.show_playing_screen()
+                        self.__show_playing_screen()
                     elif self.button_exit.is_clicked():
-                        pygame.quit()
+                        pygame.__quit()
                         sys.exit(0)
                 elif self.death_menu:
                     if self.button_again.is_clicked():
-                        self.reset_all()
-                        self.show_playing_screen()
+                        self.__reset_all()
+                        self.__show_playing_screen()
                     elif self.button_main_menu.is_clicked():
-                        self.show_menu()
+                        self.__show_menu()
                 elif self.pasue_menu:
                     if self.button_resume.is_clicked():
-                        self.show_playing_screen()
+                        self.__show_playing_screen()
                     elif self.button_main_menu.is_clicked():
-                        self.show_menu()
+                        self.__show_menu()
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     if self.playing:
-                        self.show_pasue_menu()
+                        self.__show_pasue_menu()
                     elif self.menu:
-                        self.quit()
+                        self.__quit()
                     elif self.death_menu:
-                        self.show_menu()
+                        self.__show_menu()
                     elif self.pasue_menu:
-                        self.show_playing_screen()
+                        self.__show_playing_screen()
 
-    def show_menu(self):
+    def __show_menu(self):
         """Menüyü göster"""
 
         self.menu = True
         self.playing = False
         self.death_menu = False
-        self.reset_all()
+        self.__reset_all()
         self.menu_loop()
 
-    def show_playing_screen(self):
+    def __show_playing_screen(self):
         """Oynanış ekranını göster"""
 
         self.menu = False
@@ -335,7 +334,7 @@ class Game:
         self.playing = True
         self.game_loop()
 
-    def show_pasue_menu(self):
+    def __show_pasue_menu(self):
         """Oyunu durdurma menüsünü göster"""
 
         self.menu = False
@@ -344,33 +343,33 @@ class Game:
         self.pasue_menu = True
         self.pasue_menu_loop()
 
-    def show_death_menu(self):
+    def __show_death_menu(self):
         """Ölüm ekranının menüsünü göster"""
 
         self.menu = False
         self.pasue_menu = False
         self.death_menu = True
         self.playing = False
-        self.death_menu_loop()
+        self.__death_menu_loop()
 
-    def create_enemies(self):
+    def __create_enemies(self):
         """Düşmanları getiren metod"""
 
         return [Enemy(self.level, self.window) for x in range(0, self.enemy_count, 1)]
 
-    def show_fps(self):
+    def __show_fps(self):
         """Oyunun FPS değerini ekranda gösterir"""
 
         fps_text = FONT32.render(f'FPS: {round(self.clock.get_fps())}', True, BLACK).convert_alpha()
         self.window.blit(fps_text, (self.window.get_width() - fps_text.get_width() - 10, self.window.get_height() - fps_text.get_height() - 10))
 
-    def quit(self):
+    def __quit(self):
         """Oyundan çıkma metodu"""
 
-        pygame.quit()
+        pygame.__quit()
         sys.exit(0)
 
-    def reset_all(self):
+    def __reset_all(self):
         """Oyun değerlerini sıfırla"""
 
         self.player.live = self.player_start_live
@@ -379,4 +378,4 @@ class Game:
         self.dodged = 0
         self.player.x = 30
         self.player.y = 80
-        self.enemies = self.create_enemies()
+        self.enemies = self.__create_enemies()

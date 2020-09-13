@@ -62,18 +62,17 @@ class Player:
             text,
             (
                 self.x + self.width // 2 - text.get_width() // 2,
-                self.y + self.height // 2 - text.get_height() // 2 - self.width +
-                text.get_height() // 2,
+                self.y + self.height // 2 - text.get_height() // 2 - self.width + text.get_height() // 2,
             )
         )
 
     def show_live(self):
-        """Karakterin canını gösteren metod"""
+        """Karakterin canını ekranda gösteren metod"""
 
         self.window.blit(FONT32.render(f"Can: {self.live}", True, BLACK).convert_alpha(), (10, 10))
 
     def draw(self):
-        """Karakteri yükleyen metod"""
+        """Karakteri yükleyip ekrana çizen metod"""
 
         self.window.blit(self.image, (self.x, self.y))
 
