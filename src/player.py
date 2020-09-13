@@ -9,97 +9,55 @@ import sys
 import random
 
 from src.enemy import Enemy
-from src import others
+from src.constants import BLACK, FONT18, FONT32
 
 
 class Player:
     """Oyun için oyuncu üretme sınıfı"""
 
-    name: str
-    width: int
-    height: int
-    live: int
-    window: pygame.Surface
-    x: int
-    y: int
-    vel: float
-    run_vel: float
-    image_path: str
-    image: pygame.Surface
-    limits: dict
-    font1: pygame.font.Font
-    font2: pygame.font.Font
-
-    def __init__(self, name: str, live: int, window: pygame.Surface):
-        self.name = name.strip()
+    def __init__(self, name, live, window):
+        self.name = name.strip().title()
         self.width = 50
         self.height = 50
         self.live = live
         self.window = window
-
         self.x = 30
         self.y = 80
         self.vel = 4.0
         self.run_vel = 1.2
+        self.image = pygame.transform.smoothscale(pygame.image.load(os.path.join("assets", "player.png")), (self.width, self.height)).convert_alpha()
 
-        try:
-            self.image_path = os.path.join("assets", "player.png")
-            self.image = pygame.transform.smoothscale(
-                pygame.image.load(self.image_path),
-                (self.width, self.height)
-            ).convert_alpha()
-        except pygame.error:
-            print("HATA: Karakter resmi bulunamadı!")
-            print(
-                f"İPUCU: Lütfen assets klasöründeki 'player.png' resmin olduğundan emin olun veya '{os.path.basename(__file__)}'' dosyasını kontrol edin...")
-            sys.exit(0)
-        except Exception:
-            print("HATA: Bilinmeyen bir hata meydana geldi!")
-
-        self.limits = {
-            "left": 10,
-            "top": 50,
-            "right": self.window.get_width() - 10 - self.width,
-            "bottom": self.window.get_height() - 50
-        }
-
-        self.font1 = pygame.font.SysFont(
-            "Helvetica", 18, True)
-        self.font2 = pygame.font.SysFont(
-            "Helvetica", 32, True)
-
-    def move(self, keys: tuple) -> None:
+    def move(self, keys):
         """Karakterin hareketini sağlayan metod"""
 
-        if (keys[pygame.K_LEFT] or keys[pygame.K_a]) and self.x > self.limits["left"]:
+        if (keys[pygame.K_LEFT] or keys[pygame.K_a]) and self.x > 10:
             if keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]:
                 self.x -= self.vel + self.run_vel
             else:
                 self.x -= self.vel
 
-        if (keys[pygame.K_UP] or keys[pygame.K_w]) and self.y > self.limits["top"]:
+        if (keys[pygame.K_UP] or keys[pygame.K_w]) and self.y > 50:
             if keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]:
                 self.y -= self.vel + self.run_vel
             else:
                 self.y -= self.vel
 
-        if (keys[pygame.K_RIGHT] or keys[pygame.K_d]) and self.x < self.limits["right"]:
+        if (keys[pygame.K_RIGHT] or keys[pygame.K_d]) and self.x < self.window.get_width() - 10 - self.width:
             if keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]:
                 self.x += self.vel + self.run_vel
             else:
                 self.x += self.vel
 
-        if (keys[pygame.K_DOWN] or keys[pygame.K_s]) and (self.y + self.height) < self.limits["bottom"]:
+        if (keys[pygame.K_DOWN] or keys[pygame.K_s]) and (self.y + self.height) < self.window.get_height() - 50:
             if keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]:
                 self.y += self.vel + self.run_vel
             else:
                 self.y += self.vel
 
-    def show_name(self) -> None:
+    def show_name(self):
         """Karakterin ismini üstünde gösteren metod"""
 
-        text: pygame.Surface = self.font1.render(
-            self.name, True, others.BLACK).convert_alpha()
+        text = FONT18.render(self.name, True, BLACK).convert_alpha()
         self.window.blit(
             text,
             (
@@ -109,30 +67,26 @@ class Player:
             )
         )
 
-    def show_live(self) -> None:
+    def show_live(self):
         """Karakterin canını gösteren metod"""
 
-        self.window.blit(self.font2.render(
-            f"Can: {self.live}", True, others.BLACK).convert_alpha(), (10, 10))
+        self.window.blit(FONT32.render(f"Can: {self.live}", True, BLACK).convert_alpha(), (10, 10))
 
-    def draw(self) -> None:
+    def draw(self):
         """Karakteri yükleyen metod"""
 
         self.window.blit(self.image, (self.x, self.y))
 
-    def lost_live(self, value: int = 1) -> None:
+    def lost_live(self, value=1):
         """Karakterin can kaybetme metodu"""
 
         if self.live > 0:
             self.live -= value
 
-    def is_collied(self, enemy: Enemy) -> bool:
+    def is_collied(self, enemy):
         """Karakter ile rakiplerin çarpışmasını kontrol eden metod"""
 
         # Teşekkürler!
         # https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection
-        if (self.x < enemy.x + enemy.width) and \
-                (self.x + self.width > enemy.x) and \
-        (self.y < enemy.y + enemy.height) and \
-                (self.y + self.height > enemy.y):
-            return True
+
+        return (self.x < enemy.x + enemy.display.get_width()) and (self.x + self.width > enemy.x) and (self.y < enemy.y + enemy.display.get_height()) and (self.y + self.height > enemy.y)

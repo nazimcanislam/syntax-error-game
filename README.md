@@ -4,7 +4,6 @@
 
 ![Oyun içi menü](assets/intro0.png)
 ![Oyun içi oynanış](assets/intro1.png)
-![Oyun içi ölüş](assets/intro2.png)
 
 ### Oyun Hakkında
 

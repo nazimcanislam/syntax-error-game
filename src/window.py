@@ -4,7 +4,6 @@
 
 import os
 import os.path
-import typing
 import pygame
 import pygame.display
 
@@ -12,14 +11,7 @@ import pygame.display
 class MyWindow:
     """Oyunun penceresini oluşturma sınıfı"""
 
-    width: int
-    height: int
-    title: str
-    screen: pygame.Surface
-    favicon_image: pygame.Surface
-
-    def __init__(self, size: typing.Tuple[int], title: str, full_screen: bool = False):
-
+    def __init__(self, size, title, full_screen=False):
         # Oyunun genişlik, yükleklik ve başlığını tanımla.
         self.width = size[0]
         self.height = size[1]
@@ -40,12 +32,10 @@ class MyWindow:
             )
         pygame.display.set_caption(self.title)
 
-        self.favicon_image = pygame.image.load(
-            os.path.join("assets", "favicon.png")).convert_alpha()
-        pygame.display.set_icon(pygame.transform.scale(
-            self.favicon_image, (128, 128)))
+        self.favicon_image = pygame.image.load(os.path.join("assets", "favicon.png")).convert_alpha()
+        pygame.display.set_icon(pygame.transform.scale(self.favicon_image, (128, 128)))
 
-    def get(self) -> pygame.Surface:
+    def get(self):
         """Oyun penceresini al"""
 
         return self.screen
