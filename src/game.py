@@ -283,7 +283,7 @@ class Game:
         # Eylemleri ve olayları yakala ve onlara göre işlem yap.
         for event in pygame.event.get():
             # Çıkış yapılmak isteniyor ise...
-            if event.type == pygame.__quit:
+            if event.type == pygame.QUIT:
                 self.__quit()
 
             if event.type == pygame.MOUSEBUTTONDOWN:
