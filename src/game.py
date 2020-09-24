@@ -38,7 +38,7 @@ class Game:
         # Pencereyi oluştur.
         self.window = window
         self.window.set_alpha(None)
-        pygame.event.set_allowed([pygame.__quit, pygame.KEYDOWN, pygame.MOUSEBUTTONDOWN])
+        pygame.event.set_allowed([pygame.QUIT, pygame.KEYDOWN, pygame.MOUSEBUTTONDOWN])
 
         self.player = player
         self.player_start_live = self.player.live
