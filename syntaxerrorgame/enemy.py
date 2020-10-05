@@ -7,14 +7,13 @@ import random
 import pygame
 import pygame.font
 
-from src.constants import BLACK, ENEMY_MARKS, ENEMY_FONT
-
-
-pygame.font.init()
+from syntaxerrorgame.constants import BLACK, ENEMY_MARKS, ENEMY_FONT
 
 
 class Enemy:
-    """Oyun için düşman üretme sınıfı"""
+    """
+    Oyun için düşman üretme sınıfı
+    """
 
     def __init__(self, level, window):
         self.level = level
@@ -29,12 +28,16 @@ class Enemy:
         self.display = ENEMY_FONT.render(self.mark, True, BLACK).convert_alpha()
 
     def draw(self):
-        """Düşmanın kendisini ekrana çizen metod"""
+        """
+        Düşmanın kendisini ekrana çizen metod
+        """
 
         self.window.blit(self.display, (self.x, self.y))
         self.x -= self.vel
 
     def is_outsided(self):
-        """Düşman ekrandan yani sol tarafntan çıktı mı?"""
+        """
+        Düşman ekrandan yani sol tarafntan çıktı mı?
+        """
 
         return self.x + self.display.get_width() <= 0

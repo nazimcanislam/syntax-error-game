@@ -13,23 +13,21 @@ import pygame.mixer
 import pygame.draw
 import pygame.mouse
 
-from src.constants import BLACK, BACKGROUND_COLOR, FONT32, FONT64
-from src.player import Player
-from src.enemy import Enemy
-from src.button import Button
-
-
-# Araçları çalıştır!
-pygame.init()
-pygame.mixer.init()
-pygame.font.init()
+from syntaxerrorgame.constants import BLACK, BACKGROUND_COLOR, FONT32, FONT64
+from syntaxerrorgame.player import Player
+from syntaxerrorgame.enemy import Enemy
+from syntaxerrorgame.button import Button
 
 
 class Game:
-    """Pygame oyunu yapmak için bir sınıf"""
+    """
+    Pygame oyunu yapmak için bir sınıf
+    """
 
     def __init__(self, window, player):
-        """Oyunun inşaa etme metodu"""
+        """
+        Oyunun inşaa etme metodu
+        """
 
         # Pygame'in kendi Clock() sınıfından bir obje oluştur.
         self.clock = pygame.time.Clock()  # Pygame Clock sınıfı
@@ -48,7 +46,9 @@ class Game:
         self.__init_menu_components()
 
     def __init_menu_components(self):
-        """Menü elemanlarını oluştur"""
+        """
+        Menü elemanlarını oluştur
+        """
 
         self.game_image_surface = pygame.transform.smoothscale(pygame.image.load('assets/game_image.png').convert_alpha(), (450, 193))
 
@@ -125,7 +125,9 @@ class Game:
         )
 
     def start(self):
-        """Oyunu başlatın!"""
+        """
+        Oyunu başlatın!
+        """
 
         self.bg_music.play(loops=-1)
 
@@ -140,8 +142,10 @@ class Game:
 
         self.__menu_loop()
 
-    def __death___menu_loop(self):
-        """Ölüm ekranı döngüsü"""
+    def __death_menu_loop(self):
+        """
+        Ölüm ekranı döngüsü
+        """
 
         self.bg_music.set_volume(0.5)
         pygame.mouse.set_visible(True)
@@ -164,8 +168,10 @@ class Game:
 
             self.__redraw_window()
 
-    def pasue___menu_loop(self):
-        """Oyunun durdurma ekranı"""
+    def __pasue_menu_loop(self):
+        """
+        Oyunun durdurma ekranı
+        """
 
         self.bg_music.set_volume(0.6)
         pygame.mouse.set_visible(True)
@@ -189,7 +195,9 @@ class Game:
             self.__redraw_window()
 
     def __menu_loop(self):
-        """Menü döngüsü"""
+        """
+        Menü döngüsü
+        """
 
         self.bg_music.set_volume(0.5)
         pygame.mouse.set_visible(True)
@@ -209,7 +217,9 @@ class Game:
             self.__redraw_window()
 
     def __game_loop(self):
-        """Oyun döngüsü"""
+        """
+        Oyun döngüsü
+        """
 
         self.bg_music.set_volume(1.0)
         pygame.mouse.set_visible(False)
@@ -266,7 +276,9 @@ class Game:
             self.__redraw_window()
 
     def __redraw_window(self):
-        """Ekranı tazeleyen metod"""
+        """
+        Ekranı tazeleyen metod
+        """
 
         # FPS değerini ekranda göster
         self.__show_fps()
@@ -278,7 +290,9 @@ class Game:
         self.clock.tick(self.max_fps)
 
     def __event_handler(self):
-        """Eylemleri kontrol eden metod"""
+        """
+        Eylemleri kontrol eden metod
+        """
 
         # Eylemleri ve olayları yakala ve onlara göre işlem yap.
         for event in pygame.event.get():
@@ -291,8 +305,7 @@ class Game:
                     if self.button_play.is_clicked():
                         self.__show_playing_screen()
                     elif self.button_exit.is_clicked():
-                        pygame.__quit()
-                        sys.exit(0)
+                        self.__quit()
                 elif self.death_menu:
                     if self.button_again.is_clicked():
                         self.__reset_all()
@@ -317,7 +330,9 @@ class Game:
                         self.__show_playing_screen()
 
     def __show_menu(self):
-        """Menüyü göster"""
+        """
+        Menüyü göster
+        """
 
         self.menu = True
         self.playing = False
@@ -326,7 +341,9 @@ class Game:
         self.__menu_loop()
 
     def __show_playing_screen(self):
-        """Oynanış ekranını göster"""
+        """
+        Oynanış ekranını göster
+        """
 
         self.menu = False
         self.pasue_menu = False
@@ -335,42 +352,54 @@ class Game:
         self.__game_loop()
 
     def __show_pasue_menu(self):
-        """Oyunu durdurma menüsünü göster"""
+        """
+        Oyunu durdurma menüsünü göster
+        """
 
         self.menu = False
         self.death_menu = False
         self.playing = False
         self.pasue_menu = True
-        self.pasue___menu_loop()
+        self.__pasue_menu_loop()
 
     def __show_death_menu(self):
-        """Ölüm ekranının menüsünü göster"""
+        """
+        Ölüm ekranının menüsünü göster
+        """
 
         self.menu = False
         self.pasue_menu = False
         self.death_menu = True
         self.playing = False
-        self.__death___menu_loop()
+        self.__death_menu_loop()
 
     def __create_enemies(self):
-        """Düşmanları getiren metod"""
+        """
+        Düşmanları getiren metod
+        """
 
         return [Enemy(self.level, self.window) for x in range(0, self.enemy_count, 1)]
 
     def __show_fps(self):
-        """Oyunun FPS değerini ekranda gösterir"""
+        """
+        Oyunun FPS değerini ekranda gösterir
+        """
 
         fps_text = FONT32.render(f'FPS: {round(self.clock.get_fps())}', True, BLACK).convert_alpha()
         self.window.blit(fps_text, (self.window.get_width() - fps_text.get_width() - 10, self.window.get_height() - fps_text.get_height() - 10))
 
     def __quit(self):
-        """Oyundan çıkma metodu"""
+        """
+        Oyundan çıkma metodu
+        """
 
-        pygame.__quit()
+        pygame.quit()
         sys.exit(0)
 
     def __reset_all(self):
-        """Oyun değerlerini sıfırla"""
+        """
+        Oyun değerlerini sıfırla
+        """
 
         self.player.live = self.player_start_live
         self.level = 1

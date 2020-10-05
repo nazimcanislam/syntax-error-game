@@ -9,7 +9,9 @@ import pygame.mouse
 
 
 class Button:
-    """Oyunun menüsü için tuş üretme sınıfı"""
+    """
+    Oyunun menüsü için tuş üretme sınıfı
+    """
 
     def __init__(self, window, image, pos, size):
         self.window = window
@@ -20,7 +22,9 @@ class Button:
         self.height = size[1]
 
     def draw(self):
-        """Ekrana çiz"""
+        """
+        Ekrana çiz
+        """
 
         self.window.blit(self.image, (self.x, self.y))
 

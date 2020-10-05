@@ -18,13 +18,13 @@ Her **50 hata**dan kaçtığınızda ekstra **5** can kazanırsınız.
 **Windows** kullanıcıları bu yolu seçecek.
 
 ```bath
-python SyntaxErrorGame.py
+python play.py
 ```
 
 **Linux** veya **MacOS** kullananlar ise bunu...
 
 ```bath
-python3 SyntaxErrorGame.py
+python3 play.py
 ```
 
 ### Gerekli Python Versiyonu ve Kütüphaneleri

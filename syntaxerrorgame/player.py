@@ -8,12 +8,14 @@ import os.path
 import sys
 import random
 
-from src.enemy import Enemy
-from src.constants import BLACK, FONT18, FONT32
+from syntaxerrorgame.enemy import Enemy
+from syntaxerrorgame.constants import BLACK, FONT18, FONT32
 
 
 class Player:
-    """Oyun için oyuncu üretme sınıfı"""
+    """
+    Oyun için oyuncu üretme sınıfı
+    """
 
     def __init__(self, name, live, window):
         self.name = name.strip().title()
@@ -28,7 +30,9 @@ class Player:
         self.image = pygame.transform.smoothscale(pygame.image.load(os.path.join("assets", "player.png")), (self.width, self.height)).convert_alpha()
 
     def move(self, keys):
-        """Karakterin hareketini sağlayan metod"""
+        """
+        Karakterin hareketini sağlayan metod
+        """
 
         if (keys[pygame.K_LEFT] or keys[pygame.K_a]) and self.x > 10:
             if keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]:
@@ -55,7 +59,9 @@ class Player:
                 self.y += self.vel
 
     def show_name(self):
-        """Karakterin ismini üstünde gösteren metod"""
+        """
+        Karakterin ismini üstünde gösteren metod
+        """
 
         text = FONT18.render(self.name, True, BLACK).convert_alpha()
         self.window.blit(
@@ -67,23 +73,31 @@ class Player:
         )
 
     def show_live(self):
-        """Karakterin canını ekranda gösteren metod"""
+        """
+        Karakterin canını ekranda gösteren metod
+        """
 
         self.window.blit(FONT32.render(f"Can: {self.live}", True, BLACK).convert_alpha(), (10, 10))
 
     def draw(self):
-        """Karakteri yükleyip ekrana çizen metod"""
+        """
+        Karakteri yükleyip ekrana çizen metod
+        """
 
         self.window.blit(self.image, (self.x, self.y))
 
     def lost_live(self, value=1):
-        """Karakterin can kaybetme metodu"""
+        """
+        Karakterin can kaybetme metodu
+        """
 
         if self.live > 0:
             self.live -= value
 
     def is_collied(self, enemy):
-        """Karakter ile rakiplerin çarpışmasını kontrol eden metod"""
+        """
+        Karakter ile rakiplerin çarpışmasını kontrol eden metod
+        """
 
         # Teşekkürler!
         # https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection

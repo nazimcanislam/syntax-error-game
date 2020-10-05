@@ -8,7 +8,7 @@ import pygame
 import pygame.display
 
 
-class MyWindow:
+class Window:
     """Oyunun penceresini oluşturma sınıfı"""
 
     def __init__(self, size, title, full_screen=False):
@@ -30,6 +30,7 @@ class MyWindow:
             self.screen = pygame.display.set_mode(
                 (self.width, self.height),
             )
+
         pygame.display.set_caption(self.title)
 
         self.favicon_image = pygame.image.load(os.path.join("assets", "favicon.png")).convert_alpha()
