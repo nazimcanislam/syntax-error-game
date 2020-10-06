@@ -18,7 +18,10 @@ def play():
 	Yani tabii, bu oyun öyle o kadar zevkli değildir, henüz...
 	"""
 
+<<<<<<< HEAD
+=======
 	# Araçları çalıştır!
+>>>>>>> 1d360683842047a60998f2e1014902d4cb1032a8
 	pygame.init()
 	pygame.mixer.init()
 	pygame.font.init()
