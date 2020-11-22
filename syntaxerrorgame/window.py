@@ -9,13 +9,9 @@ import pygame.display
 
 
 class Window:
-<<<<<<< HEAD:syntaxerrorgame/window.py
     """
     Oyunun penceresini oluşturma sınıfı
     """
-=======
-    """Oyunun penceresini oluşturma sınıfı"""
->>>>>>> 1d360683842047a60998f2e1014902d4cb1032a8:src/window.py
 
     def __init__(self, size, title, full_screen=False):
         # Oyunun genişlik, yükleklik ve başlığını tanımla.
