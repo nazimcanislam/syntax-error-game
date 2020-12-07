@@ -2,8 +2,8 @@
 
 ---
 
-![Oyun içi menü](assets/intro0.png)
-![Oyun içi oynanış](assets/intro1.png)
+![Oyun içi menü](assets/images/git_main_menu.png)
+![Oyun içi oynanış](assets/images/git_game_loop.png)
 
 ### Oyun Hakkında
 
@@ -15,41 +15,28 @@ Her **50 hata**dan kaçtığınızda ekstra **5** can kazanırsınız.
 
 ### Oyunu Çalıştır
 
-**Windows** kullanıcıları bu yolu seçecek.
-
-```bath
-python play.py
+Öncelikle sanal ortamı oluşturalım...
+```bash
+python3 -m pip install virtualenv
+python3 -m virtualenv venv
 ```
 
-**Linux** veya **MacOS** kullananlar ise bunu...
+Linux ve macOS için sanal ortamı çalıştır
+```bash
+source venv/bin/activate
+```
 
-```bath
+Windows için sanal ortamı çalıştır
+```bash
+venv\Scripts\activate
+```
+
+Daha sonra ise gerekli kütüphaneleri kuralım
+```bash
+python3 -m pip install -r requirements.txt
+```
+
+Son olarak oyunu çalıştırmak kaldı... İyi eğlenceler :)
+```bash
 python3 play.py
 ```
-
-### Gerekli Python Versiyonu ve Kütüphaneleri
-
--   python==3.8.4
--   pygame==1.9.6
-
-### Kütüphaneleri Kurmak
-
-**Windows** kullanıcıları kühüphane kurarken **pip** kullanmalı.
-
-```bash
-pip install pygame==1.9.6
-```
-
-**Linux** kullanıyorsanız, kullandığınız dağıtıma göre bir kullanım seçmelisiniz. Linux'da pip kullanımı öğrenmek için [buradan](https://www.tecmint.com/install-pip-in-linux/) kopya çekebilirsiniz 😃
-
-Örneğin **Ubuntu**'da böyle...
-
-```bash
-sudo apt-get install python-pygame==1.9.6
-```
-
-**MacOS** kullanıcıları [buraya](https://sourabhbajaj.com/mac-setup/Python/pip.html) göz atabilir.
-
-### Windows Kullanıyorum ve Python Kurulu Değil?
-
-Bi' zahmet [buradan](https://www.python.org/) hallediverin.
