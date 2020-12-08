@@ -1,9 +1,9 @@
 {
 	"window": {
 		"title": "Yazım Hatası",
-		"width": 1280,
-		"height": 720,
-		"fullScreen": false,
+		"width": 1920,
+		"height": 1080,
+		"fullScreen": true,
 		"fps": 60
 	},
 	"colors": {
