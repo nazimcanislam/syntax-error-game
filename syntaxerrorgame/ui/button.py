@@ -19,6 +19,13 @@ class Button(Entity):
     """
 
     def __init__(self, window, image, pos, size):
+        """
+        :param: window: pygame.Surface
+        :param: image: pygame.Surface
+        :param: pos: Tuple[int, int]
+        :param: size: Tuple[int, int]
+        """
+
         super().__init__()
         
         with open(file=os.path.join('gamedata', 'data.json'), mode='r', encoding='utf-8') as file:
@@ -43,7 +50,6 @@ class Button(Entity):
         """
         This is a click listener
         Call this method in game.py/Game().event_handler() method, then inside for loop give it event
-
         :return: bool
         """
 

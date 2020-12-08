@@ -7,9 +7,28 @@ import os.path
 import pygame
 import pygame.transform
 import pygame.image
+import pygame.font
 
 from syntaxerrorgame.ui.button import Button
-from syntaxerrorgame.ui.fonts import Fonts
+
+
+pygame.font.init()
+
+ENEMY_FONT = pygame.font.SysFont('Times New Roman', 48)
+
+FONT18 = pygame.font.Font(os.path.join('assets', 'fonts/VT323-Regular.ttf'), 18)
+FONT32 = pygame.font.Font(os.path.join('assets', 'fonts/VT323-Regular.ttf'), 32)
+FONT64 = pygame.font.Font(os.path.join('assets', 'fonts/VT323-Regular.ttf'), 64)
+
+
+def show_fps(game):
+    """
+    This method shows FPS value on window
+    :param: game: syntaxerrorgame/game.py/Game
+    """
+
+    fps_text = FONT32.render(f'FPS: {round(game.clock.get_fps())}', True, game.data['colors']['black']).convert_alpha()
+    game.window.blit(fps_text, (game.window.get_width() - fps_text.get_width() - 10, 10))
 
 
 def init_menu_components(game):
@@ -91,13 +110,3 @@ def init_menu_components(game):
             game.button_resume_surface.get_height(),
         ],
     )
-
-
-def show_fps(game):
-    """
-    This method shows FPS value on window
-    :param: game: syntaxerrorgame/game.py/Game
-    """
-
-    fps_text: pygame.Surface = Fonts.FONT32.render(f'FPS: {round(game.clock.get_fps())}', True, game.data['colors']['black']).convert_alpha()
-    game.window.blit(fps_text, (game.window.get_width() - fps_text.get_width() - 10, 10))

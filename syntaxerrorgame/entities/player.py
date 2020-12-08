@@ -13,7 +13,8 @@ import pygame.event
 
 from typing import Dict
 
-from syntaxerrorgame.ui.fonts import Fonts
+from syntaxerrorgame.ui import FONT18
+from syntaxerrorgame.ui.label import Label
 from syntaxerrorgame.entities.entity import Entity
 
 
@@ -55,6 +56,13 @@ class Player(Entity):
             'right': False,
             'down': False
         }
+        self.name_label = Label(
+            text=self.name,
+            font_name=os.path.join('assets', 'fonts/VT323-Regular.ttf'),
+            size=18,
+            color=self.data['colors']['black'],
+            is_sys_font=False,
+        )
 
     def move(self, event):
         """
@@ -63,27 +71,27 @@ class Player(Entity):
         """
 
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT:
+            if event.key in (pygame.K_LEFT, pygame.K_a):
                 self.moving['left'] = True
-            elif event.key == pygame.K_UP:
+            elif event.key in (pygame.K_UP, pygame.K_w):
                 self.moving['up'] = True
-            elif event.key == pygame.K_RIGHT:
+            elif event.key in (pygame.K_RIGHT, pygame.K_d):
                 self.moving['right'] = True
-            elif event.key == pygame.K_DOWN:
+            elif event.key in (pygame.K_DOWN, pygame.K_s):
                 self.moving['down'] = True
-            
+
             if event.key in (pygame.K_LSHIFT, pygame.K_RSHIFT):
                 self.vel += self.run_vel
         elif event.type == pygame.KEYUP:
-            if event.key == pygame.K_LEFT:
+            if event.key in (pygame.K_LEFT, pygame.K_a):
                 self.moving['left'] = False
-            elif event.key == pygame.K_UP:
+            elif event.key in (pygame.K_UP, pygame.K_w):
                 self.moving['up'] = False
-            elif event.key == pygame.K_RIGHT:
+            elif event.key in (pygame.K_RIGHT, pygame.K_d):
                 self.moving['right'] = False
-            elif event.key == pygame.K_DOWN:
+            elif event.key in (pygame.K_DOWN, pygame.K_s):
                 self.moving['down'] = False
-            
+
             if event.key in (pygame.K_LSHIFT, pygame.K_RSHIFT):
                 self.vel -= self.run_vel
 
@@ -111,12 +119,11 @@ class Player(Entity):
         This method shows player name on player head
         """
 
-        text = Fonts.FONT18.render(self.name, True, self.data['colors']['black']).convert_alpha()
-        self.window.blit(
-            text,
+        self.name_label.draw(
+            self.window,
             (
-                self.rect.x + self.width // 2 - text.get_width() // 2,
-                self.rect.y + self.height // 2 - text.get_height() // 2 - self.width + text.get_height() // 2,
+                self.rect.x + self.width // 2 - self.name_label.surface.get_width() // 2,
+                self.rect.y + self.height // 2 - self.name_label.surface.get_height() // 2 - self.width + self.name_label.surface.get_height() // 2,
             )
         )
 

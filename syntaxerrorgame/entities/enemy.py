@@ -9,7 +9,7 @@ import random
 import pygame
 import pygame.font
 
-from syntaxerrorgame.ui.fonts import Fonts
+from syntaxerrorgame.ui import ENEMY_FONT
 from syntaxerrorgame.entities.entity import Entity
 
 
@@ -28,7 +28,7 @@ class Enemy(Entity):
         self.window = window
 
         self.mark = random.choice(self.data['enemy']['marks'])
-        self.image = Fonts.ENEMY_FONT.render(self.mark, True, self.data['colors']['black']).convert_alpha()
+        self.image = ENEMY_FONT.render(self.mark, True, self.data['colors']['black']).convert_alpha()
         self.rect = self.image.get_rect()
         self.rect.x = random.randint(self.window.get_width() + 100, 2500 + self.level * 100)
         self.rect.y = random.randint(50, self.window.get_height() - 100)

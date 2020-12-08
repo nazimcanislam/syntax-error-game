@@ -19,9 +19,8 @@ import pygame.transform
 
 from syntaxerrorgame.entities.player import Player
 from syntaxerrorgame.entities.enemy import Enemy
-from syntaxerrorgame.ui import init_menu_components, show_fps
+from syntaxerrorgame.ui import init_menu_components, show_fps, FONT32, FONT64
 from syntaxerrorgame.ui.button import Button
-from syntaxerrorgame.ui.fonts import Fonts
 from syntaxerrorgame.util import save_high_score
 
 
@@ -94,7 +93,7 @@ class Game:
             self.event_handler()
             self.window.fill(self.data['colors']['backgroundColor'])
 
-            score_text = Fonts.FONT64.render(f'Toplam Kaçılan: {self.score}', True, self.data['colors']['black'])
+            score_text = FONT64.render(f'Toplam Kaçılan: {self.score}', True, self.data['colors']['black'])
             self.window.blit(
                 score_text,
                 (
@@ -120,7 +119,7 @@ class Game:
             self.event_handler()
             self.window.fill(self.data['colors']['backgroundColor'])
 
-            waiting_text = Fonts.FONT64.render('Seni burda bekliyorum!', True, self.data['colors']['black'])
+            waiting_text = FONT64.render('Seni burda bekliyorum!', True, self.data['colors']['black'])
             self.window.blit(
                 waiting_text,
                 (
@@ -167,7 +166,6 @@ class Game:
 
         while self.playing:
             self.event_handler()
-
             self.window.fill(self.data['colors']['backgroundColor'])
 
             self.player.draw()
@@ -203,16 +201,16 @@ class Game:
                         self.enemy_count += self.level
                         self.enemies = self.create_enemies()
 
-            self.level_text = Fonts.FONT32.render(f'Seviye: {self.level}', True, self.data['colors']['black']).convert_alpha()
+            self.level_text = FONT32.render(f'Seviye: {self.level}', True, self.data['colors']['black']).convert_alpha()
             self.window.blit(self.level_text, (10, 10))
 
-            self.live_label = Fonts.FONT32.render(f"Can: {self.player.live}", True, self.data['colors']['black']).convert_alpha()
+            self.live_label = FONT32.render(f"Can: {self.player.live}", True, self.data['colors']['black']).convert_alpha()
             self.window.blit(self.live_label, (10, self.level_text.get_rect().y + self.level_text.get_height() + 10))
 
-            self.high_score_text = Fonts.FONT32.render(f'En çok kaçılan: {self.high_score}', True, self.data['colors']['black']).convert_alpha()
+            self.high_score_text = FONT32.render(f'En çok kaçılan: {self.high_score}', True, self.data['colors']['black']).convert_alpha()
             self.window.blit(self.high_score_text, (10, self.window.get_height() - self.high_score_text.get_height() - 10))
 
-            self.score_text = Fonts.FONT32.render(f'Kaçılan: {self.score}', True, self.data['colors']['black']).convert_alpha()
+            self.score_text = FONT32.render(f'Kaçılan: {self.score}', True, self.data['colors']['black']).convert_alpha()
             self.window.blit(self.score_text, (10, self.window.get_height() - self.high_score_text.get_height() - self.high_score_text.get_height()))
 
             if self.player.live == 0:
