@@ -1,14 +1,14 @@
 {
 	"game": {
 		"name": "Yazım Hatası",
-		"version": "0.1.0v",
-		"authot": "Nazımcan İslam"
+		"version": "0.1.0",
+		"author": "Nazımcan İslam"
 	},
 	"window": {
 		"title": "Yazım Hatası",
-		"width": 1920,
-		"height": 1080,
-		"fullScreen": true,
+		"width": 1280,
+		"height": 720,
+		"fullScreen": false,
 		"fps": 60
 	},
 	"colors": {
