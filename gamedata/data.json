@@ -1,4 +1,9 @@
 {
+	"game": {
+		"name": "Yazım Hatası",
+		"version": "0.1.0v",
+		"authot": "Nazımcan İslam"
+	},
 	"window": {
 		"title": "Yazım Hatası",
 		"width": 1920,
