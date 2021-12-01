@@ -1,0 +1,30 @@
+{
+	"game": {
+		"name": "Yazım Hatası",
+		"version": "0.1.0",
+		"author": "Nazımcan İslam"
+	},
+	"window": {
+		"title": "Yazım Hatası",
+		"width": 1280,
+		"height": 720,
+		"fullScreen": false,
+		"fps": 60
+	},
+	"colors": {
+		"black": [0, 0, 0],
+		"white": [255, 255, 255],
+		"red": [255, 0, 0],
+		"green": [0, 255, 0],
+		"blue": [0, 0, 255],
+		"backgroundColor": [240, 240, 240]
+	},
+	"enemy": {
+		"marks": [
+			";", "i++", "j++", "{", "}", "switch()", "do while", "implements",
+			"foreach()", "public", "protected", "private", "void", "using", "namespace", "static",
+			"final", "var", "let", "const", "catch", "throw", "new", "string[]",
+			"int[]", "short", "byte", "long", "double", "char", "char[]"
+		]
+	}
+}
